@@ -115,20 +115,6 @@ python-versions = "*"
 test = ["flake8 (==3.7.8)", "hypothesis (==3.55.3)"]
 
 [[package]]
-name = "dijkstar"
-version = "2.6.0"
-description = "Dijkstra/A*"
-category = "main"
-optional = false
-python-versions = "*"
-
-[package.dependencies]
-six = "*"
-
-[package.extras]
-dev = ["coverage", "flake8", "tox"]
-
-[[package]]
 name = "idna"
 version = "3.4"
 description = "Internationalized Domain Names in Applications (IDNA)"
@@ -373,7 +359,7 @@ socks = ["PySocks (>=1.5.6,!=1.5.7,<2.0)"]
 [metadata]
 lock-version = "1.1"
 python-versions = ">=3.8,<3.11"
-content-hash = "e198a4cf1d25d4a3136dbd20ee7570f120ce380287fc465956faf0c3ebf0d650"
+content-hash = "0674ca6963ac98b726310cc787bef1cd0c2149d1bc3c0ff3f275018fd3fbf04c"
 
 [metadata.files]
 advent-of-code-data = []
@@ -409,10 +395,6 @@ click = [
 ]
 colorama = []
 commonmark = []
-dijkstar = [
-    {file = "Dijkstar-2.6.0-py3-none-any.whl", hash = "sha256:49c7faad4273bc88609f688d5c00b80761d06793cb3285268cb385510c6a6e76"},
-    {file = "Dijkstar-2.6.0.tar.gz", hash = "sha256:ba9fa254c2ab9667a89dbaa9e322e59fc72f20fc6730ea6fe7be1f85e15a5bb7"},
-]
 idna = []
 more-itertools = []
 mpmath = [
