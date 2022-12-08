@@ -1,0 +1,13 @@
+#!/usr/bin/env polyglot
+#!/usr/bin/env python
+import os, re, webbrowser
+import aocd
+
+m = re.search(r"advent-of-code/(\d+)/day(\d+)", os.getcwd())
+year, day = map(int, m.groups())
+
+aocd.get_data(year=year, day=day, block=True)
+webbrowser.open(f"https://adventofcode.com/{year}/day/{day}")
+
+#!/usr/bin/env bash
+ls *.py | entr -c -r python /_
