@@ -1,6 +1,6 @@
 [[package]]
 name = "advent-of-code-data"
-version = "1.3.1"
+version = "1.3.2"
 description = "Get your puzzle data with a single import"
 category = "main"
 optional = false
@@ -67,7 +67,7 @@ lxml = ["lxml"]
 
 [[package]]
 name = "certifi"
-version = "2022.9.24"
+version = "2022.12.7"
 description = "Python package for providing Mozilla's CA Bundle."
 category = "main"
 optional = false
@@ -174,7 +174,7 @@ python-versions = ">=3.6"
 
 [[package]]
 name = "polyglot"
-version = "0.2.0"
+version = "0.2.1"
 description = ""
 category = "dev"
 optional = false
@@ -185,8 +185,10 @@ develop = false
 typer = {version = "^0.7.0", extras = ["all"]}
 
 [package.source]
-type = "directory"
-url = "../polyglot"
+type = "git"
+url = "git@github.com:buckley-w-david/polyglot.git"
+reference = "master"
+resolved_reference = "98cde5291d54b23709c8c9fe1ba5b707a22bdb1b"
 
 [[package]]
 name = "pygments"
@@ -371,7 +373,7 @@ socks = ["PySocks (>=1.5.6,!=1.5.7,<2.0)"]
 [metadata]
 lock-version = "1.1"
 python-versions = ">=3.8,<3.11"
-content-hash = "e47b4b98afefb6f74497b8c5aafd32dd3fea4fa7df56b2a910f4a073deb3bc2a"
+content-hash = "e198a4cf1d25d4a3136dbd20ee7570f120ce380287fc465956faf0c3ebf0d650"
 
 [metadata.files]
 advent-of-code-data = []
