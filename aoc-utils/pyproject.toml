@@ -1,0 +1,18 @@
+[tool.poetry]
+name = "aoc-utils"
+version = "0.5.4"
+description = ""
+authors = ["David Buckley <david@davidbuckley.ca>"]
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = ">=3.7,<3.11"
+
+[tool.poetry.dev-dependencies]
+pytest = "^5.2"
+black = "^21.12b0"
+mypy = "^0.910"
+
+[build-system]
+requires = ["poetry-core>=1.0.0"]
+build-backend = "poetry.core.masonry.api"
