@@ -2,6 +2,8 @@
 
 This repo is a collection of [Advent of Code](https://adventofcode.com/) solutions.
 
+Most of the solutions here are pretty terrible and optimized getting to a working solution as fast as possible.
+
 ## Dependencies
 
  - [poetry](https://python-poetry.org/)
