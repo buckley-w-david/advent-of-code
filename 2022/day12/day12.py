@@ -1,30 +1,49 @@
 #!/usr/bin/env python
 
-# Grid, Direction
-# Direction.NORTH,SOUTH,EAST,WEST,NE,SE,NW,SW
-# g = Grid([[1, 2, 3], [4, 5, 6], [7, 8, 9]])
-# g.width, g.height, (y, x) in g (coords), g[(y, x)], g[(y, x)] = 5
-# for item in g => iterate over items in row major order
-# g.row_major(_with_index)() => iterate over items in row major order
-# g.column_major(_with_index)() => iterate over items in column major order
-# g.apply(func) => call func with each item
-# g.map(func) => return new Grid with results of func
-# g.ray_from((y, x), direction), yields items from a starting point in a direction
-# g.around(_with_index) => What it sounds like
-
-# Graph
-# g = Graph()
-# g.add_edge(from, to, weight=something)
-# g.dijkstra(start) => Dijkstra (has `distance_to`, and `path_to` methods)
-
-# ShuntingYard
-# Expression parser with configurable precedence for operations so you can throw out (B)EDMAS (no support for brackets)
 from aoc_utils import * # type: ignore
 
 from aocd import get_data
 
+import string
 
 data = get_data(year=2022, day=12, block=True)
-print(data)
+lines = data.splitlines()
 
-# submit(answer, part="a", day=12, year=2022)
+g = []
+
+h = string.ascii_lowercase
+start = None
+end = None
+
+for y in range(len(lines)):
+    line = lines[y]
+    l = []
+    for x in range(len(line)):
+        p = (y, x)
+        item1 = line[x]
+        if item1 == "S":
+            start = p
+            h1 = 0
+        elif item1 == "E":
+            end = p
+            h1 = h.index("z")
+        else:
+            h1 = h.index(item1)
+        l.append(h1)
+    g.append(l)
+
+grid = Grid(g)
+g = Graph()
+for p, h1 in grid.row_major_with_index():
+    for q, h2 in grid.around_with_index(p, corners=False):
+        if h2 - h1 <= 1:
+            g.add_edge(p, q)
+
+m = g.dijkstra(start).distance_to(end)
+for p, h1 in grid.row_major_with_index():
+    if h1 == 0:
+        try:
+            m = min(m, g.dijkstra(p).distance_to(end))
+        except KeyError:
+            pass
+print(m)
