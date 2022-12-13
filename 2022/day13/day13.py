@@ -4,9 +4,11 @@ from aoc_utils import * # type: ignore
 
 from aocd import get_data
 
+from ast import literal_eval
+
 data = get_data(year=2022, day=13, block=True)
 
-lines = [eval(line) for line in (data.splitlines() + ["[[2]]","[[6]]"]) if line.strip()]
+lines = [literal_eval(line) for line in (data.splitlines() + ["[[2]]","[[6]]"]) if line.strip()]
 
 from itertools import zip_longest
 
@@ -31,11 +33,9 @@ def cmp(left, right):
                 return False
         return None
     elif isinstance(left, int):
-        v = cmp([left], right)
-        return v
+        return cmp([left], right)
     else:
-        v = cmp(left, [right])
-        return v
+        return cmp(left, [right])
 
 from functools import total_ordering
 
