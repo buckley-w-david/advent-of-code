@@ -39,11 +39,7 @@ for p, h1 in grid.row_major_with_index():
         if h2 - h1 <= 1:
             g.add_edge(p, q)
 
-m = g.dijkstra(start).distance_to(end)
-for p, h1 in grid.row_major_with_index():
-    if h1 == 0:
-        try:
-            m = min(m, g.dijkstra(p).distance_to(end))
-        except KeyError:
-            pass
-print(m)
+all_spaces = grid.width * grid.height
+ds = [g.dijkstra(p) for p, h in grid.row_major_with_index() if h == 0]
+shortest = min(ds, key=lambda dij: dij.distance_to(end) if end in dij.predecessors else all_spaces)
+print(shortest.distance_to(end))
