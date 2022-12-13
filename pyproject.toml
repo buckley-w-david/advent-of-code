@@ -11,9 +11,10 @@ numpy = "^1.21.4"
 aoc-utils = { path = "aoc-utils" }
 sympy = "^1.9"
 more-itertools = "^8.12.0"
+manim = "^0.17.1"
 
 [tool.poetry.dev-dependencies]
-polyglot = { git = "git@github.com:buckley-w-david/polyglot.git" }
+polyglot = { git = "https://github.com/buckley-w-david/polyglot.git" }
 
 [build-system]
 requires = ["poetry-core>=1.0.0"]
