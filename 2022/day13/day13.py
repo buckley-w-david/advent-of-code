@@ -1,30 +1,56 @@
 #!/usr/bin/env python
 
-# Grid, Direction
-# Direction.NORTH,SOUTH,EAST,WEST,NE,SE,NW,SW
-# g = Grid([[1, 2, 3], [4, 5, 6], [7, 8, 9]])
-# g.width, g.height, (y, x) in g (coords), g[(y, x)], g[(y, x)] = 5
-# for item in g => iterate over items in row major order
-# g.row_major(_with_index)() => iterate over items in row major order
-# g.column_major(_with_index)() => iterate over items in column major order
-# g.apply(func) => call func with each item
-# g.map(func) => return new Grid with results of func
-# g.ray_from((y, x), direction), yields items from a starting point in a direction
-# g.around(_with_index) => What it sounds like
-
-# Graph
-# g = Graph()
-# g.add_edge(from, to, weight=something)
-# g.dijkstra(start) => Dijkstra (has `distance_to`, and `path_to` methods)
-
-# ShuntingYard
-# Expression parser with configurable precedence for operations so you can throw out (B)EDMAS (no support for brackets)
 from aoc_utils import * # type: ignore
 
 from aocd import get_data
 
-
 data = get_data(year=2022, day=13, block=True)
-print(data)
 
-# submit(answer, part="a", day=13, year=2022)
+lines = [eval(line) for line in (data.splitlines() + ["[[2]]","[[6]]"]) if line.strip()]
+
+from itertools import zip_longest
+
+def cmp(left, right):
+    if isinstance(left, int) and isinstance(right, int):
+        if left < right:
+            return True
+        elif left > right:
+            return False
+        else:
+            return None
+    elif isinstance(left, list) and isinstance(right, list):
+        for l, r in zip_longest(left, right):
+            if l == None:
+                return True
+            elif r == None:
+                return False
+            ordered = cmp(l, r)
+            if ordered == True:
+                return True
+            elif ordered == False:
+                return False
+        return None
+    elif isinstance(left, int):
+        v = cmp([left], right)
+        return v
+    else:
+        v = cmp(left, [right])
+        return v
+
+from functools import total_ordering
+
+@total_ordering
+class Line:
+    def __init__(self, l):
+        self.l = l
+
+    def __eq__(self, other):
+        return False
+    
+    def __lt__(self, other):
+        return cmp(self.l, other.l)
+
+s = [str(l.l) for l in sorted(map(Line, lines))]
+t1 = s.index("[[2]]")+1
+t2 = s.index("[[6]]")+1
+print(t1*t2)
