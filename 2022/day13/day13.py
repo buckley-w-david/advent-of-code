@@ -18,8 +18,6 @@ def cmp(left, right):
             return True
         elif left > right:
             return False
-        else:
-            return None
     elif isinstance(left, list) and isinstance(right, list):
         for l, r in zip_longest(left, right):
             if l == None:
@@ -31,7 +29,6 @@ def cmp(left, right):
                 return True
             elif ordered == False:
                 return False
-        return None
     elif isinstance(left, int):
         return cmp([left], right)
     else:
