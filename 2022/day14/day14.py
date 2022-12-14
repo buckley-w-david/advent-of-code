@@ -43,9 +43,8 @@ while True:
             sy += 1
             sx += 1
             dirty = True
+    t += 1
     if (sx, sy) == SAND:
-        t += 1
         break
     occupied.add((sx, sy))
-    t += 1
 print(t)
