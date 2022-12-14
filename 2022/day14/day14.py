@@ -1,30 +1,51 @@
 #!/usr/bin/env python
 
-# Grid, Direction
-# Direction.NORTH,SOUTH,EAST,WEST,NE,SE,NW,SW
-# g = Grid([[1, 2, 3], [4, 5, 6], [7, 8, 9]])
-# g.width, g.height, (y, x) in g (coords), g[(y, x)], g[(y, x)] = 5
-# for item in g => iterate over items in row major order
-# g.row_major(_with_index)() => iterate over items in row major order
-# g.column_major(_with_index)() => iterate over items in column major order
-# g.apply(func) => call func with each item
-# g.map(func) => return new Grid with results of func
-# g.ray_from((y, x), direction), yields items from a starting point in a direction
-# g.around(_with_index) => What it sounds like
-
-# Graph
-# g = Graph()
-# g.add_edge(from, to, weight=something)
-# g.dijkstra(start) => Dijkstra (has `distance_to`, and `path_to` methods)
-
-# ShuntingYard
-# Expression parser with configurable precedence for operations so you can throw out (B)EDMAS (no support for brackets)
 from aoc_utils import * # type: ignore
 
 from aocd import get_data
 
 
 data = get_data(year=2022, day=14, block=True)
-print(data)
+lines = data.splitlines()
+isl = map(ints, lines)
 
-# submit(answer, part="a", day=14, year=2022)
+occupied = set()
+
+t = 0
+
+from itertools import pairwise
+
+for l in isl:
+    points = chunk(l, 2)
+    for (x1, y1), (x2, y2) in pairwise(points):
+        if x1 != x2:
+            occupied.update([(x, y1) for x in range(min(x1, x2), max(x1, x2)+1)])
+        else:
+            occupied.update([(x1, y) for y in range(min(y1, y2), max(y1, y2)+1)])
+
+SAND = (500, 0)
+max_y = max(occupied, key=lambda xy: xy[1])[1]
+floor = max_y + 2
+
+while True:
+    sx, sy = (500, 0)
+    dirty = True
+    while dirty:
+        dirty = False
+        if (sx, sy+1) not in occupied and sy+1 != floor:
+            sy += 1
+            dirty = True
+        elif (sx-1, sy+1) not in occupied and sy+1 != floor:
+            sy += 1
+            sx -= 1
+            dirty = True
+        elif (sx+1, sy+1) not in occupied and sy+1 != floor:
+            sy += 1
+            sx += 1
+            dirty = True
+    if (sx, sy) == SAND:
+        t += 1
+        break
+    occupied.add((sx, sy))
+    t += 1
+print(t)
