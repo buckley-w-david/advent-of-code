@@ -1,30 +1,32 @@
 #!/usr/bin/env python
 
-# Grid, Direction
-# Direction.NORTH,SOUTH,EAST,WEST,NE,SE,NW,SW
-# g = Grid([[1, 2, 3], [4, 5, 6], [7, 8, 9]])
-# g.width, g.height, (y, x) in g (coords), g[(y, x)], g[(y, x)] = 5
-# for item in g => iterate over items in row major order
-# g.row_major(_with_index)() => iterate over items in row major order
-# g.column_major(_with_index)() => iterate over items in column major order
-# g.apply(func) => call func with each item
-# g.map(func) => return new Grid with results of func
-# g.ray_from((y, x), direction), yields items from a starting point in a direction
-# g.around(_with_index) => What it sounds like
-
-# Graph
-# g = Graph()
-# g.add_edge(from, to, weight=something)
-# g.dijkstra(start) => Dijkstra (has `distance_to`, and `path_to` methods)
-
-# ShuntingYard
-# Expression parser with configurable precedence for operations so you can throw out (B)EDMAS (no support for brackets)
 from aoc_utils import * # type: ignore
 
 from aocd import get_data
 
 
 data = get_data(year=2022, day=15, block=True)
-print(data)
 
-# submit(answer, part="a", day=15, year=2022)
+lines = data.splitlines()
+isl = map(ints, lines)
+
+def dist(p1, p2):
+    x1, y1 = p1
+    x2, y2 = p2
+    return abs(x2-x1) + abs(y2-y1)
+
+d = {}
+for sx, sy, bx, by in isl:
+    d[(sx, sy)] = (bx, by, dist((sx, sy), (bx, by)))
+
+edge = 4000000
+
+for (sx, sy), (_, _, r) in d.items():
+    for t in range(r+1):
+        for cx, cy in [( sx - r - 1 + t, sy - t ), ( sx - r - 1 + t, sy + t ), ( sx + r + 1 - t, sy - t ), ( sx + r + 1 - t, sy + t )]:
+            if 0 <= cx <= edge and 0 <= cy <= edge:
+                for sensor, (_, _, r) in d.items():
+                    if dist((cx, cy), sensor) <= r:
+                        break
+                else:
+                    print( cx * 4000000 + cy )
