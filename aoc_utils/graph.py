@@ -1,3 +1,4 @@
+import abc
 from collections import defaultdict
 try:
     from functools import cache
@@ -5,6 +6,9 @@ except ImportError:
     from functools import lru_cache
     cache = lru_cache(None)
 import heapq
+from typing import TypeVar, Generic, Iterable, Callable, Tuple, Set, Iterator
+
+T = TypeVar("T")
 
 class Dijkstra:
     def __init__(self, start, distances, predecessors):
@@ -12,11 +16,11 @@ class Dijkstra:
         self.distances = distances
         self.predecessors = predecessors
 
-    def distance_to(self, target):
+    def distance_to(self, target: T) -> int:
         return self.distances[target]
 
     @cache
-    def path_to(self, target):
+    def path_to(self, target: T) -> list[T]:
         path = []
         node = target
         while node is not self.start:
@@ -27,20 +31,12 @@ class Dijkstra:
         return path
 
 
-class Graph:
-    def __init__(self):
-        self.nodes = set()
-        self.edges = defaultdict(set)
+class NodeGraph(Generic[T], abc.ABC):
+    @abc.abstractmethod
+    def edges(self, node: T) -> Iterable[T]:
+        ...
 
-    def add_edge(self, p, q, weight=1):
-        self.nodes.add(p)
-        self.nodes.add(q)
-        self.edges[p].add((weight, q))
-
-    def dijkstra(self, start):
-        if start not in self.nodes:
-            raise ValueError(f"{start} is not in the graph")
-
+    def dijkstra(self, start: T) -> Dijkstra:
         inf = float('inf')
         dist = { start: 0 }
         prev = { }
@@ -52,7 +48,7 @@ class Graph:
             if u in history:
                 continue
             history.add(u)
-            for cost, v in self.edges[u]:
+            for cost, v in self.edges(u):
                 if v in history:
                     continue
 
@@ -62,3 +58,22 @@ class Graph:
                     prev[v] = u
                     heapq.heappush(pq, (alt, v))
         return Dijkstra(start, dist, prev)
+
+class Graph(NodeGraph[T]):
+    def __init__(self):
+        self._edges = defaultdict(set)
+        super().__init__()
+
+    def add_edge(self, p: T, q: T, weight=1):
+        self._edges[p].add((weight, q))
+
+    def edges(self, node: T) -> Set[T]:
+        return self._edges[node]
+
+
+class LazyGraph(NodeGraph[T]):
+    def __init__(self, neighbour_fn: Callable[[T], Iterable[Tuple[int, T]]]):
+        self.neighbour_fn = neighbour_fn
+
+    def edges(self, node: T) -> Iterator[Tuple[int, T]]:
+        yield from self.neighbour_fn(node)
