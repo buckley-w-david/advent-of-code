@@ -20,7 +20,7 @@ nb = ["ipython", "jupyter-server"]
 
 [[package]]
 name = "aoc-utils"
-version = "0.6.0"
+version = "0.6.4"
 description = ""
 category = "main"
 optional = false
@@ -136,8 +136,8 @@ tests = ["pytest (>=4.6)"]
 
 [[package]]
 name = "numpy"
-version = "1.23.5"
-description = "NumPy is the fundamental package for array computing with Python."
+version = "1.24.0"
+description = "Fundamental package for array computing in Python"
 category = "main"
 optional = false
 python-versions = ">=3.8"
