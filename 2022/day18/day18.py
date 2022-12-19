@@ -19,6 +19,15 @@ def gy(p):
 def gz(p):
     return p[2]
 
+directions = [
+    ( 1,  0,  0),
+    (-1,  0,  0),
+    ( 0,  1,  0),
+    ( 0, -1,  0),
+    ( 0,  0,  1),
+    ( 0,  0, -1),
+]
+
 min_x, max_x = min(occupied, key=gx)[0]-1, max(occupied, key=gx)[0]+1
 min_y, max_y = min(occupied, key=gy)[1]-1, max(occupied, key=gy)[1]+1
 min_z, max_z = min(occupied, key=gz)[2]-1, max(occupied, key=gz)[2]+1
@@ -36,12 +45,8 @@ while queue:
         continue
     history.add((x, y, z))
 
-    for p in [(x+1, y, z),
-            (x-1, y, z),
-            (x, y+1, z),
-            (x, y-1, z),
-            (x, y, z+1),
-            (x, y, z-1)]:
+    for dx, dy, dz in directions:
+        p = (x+dx, y+dy, z+dz)
         if p in occupied:
             seen += 1
         else:
