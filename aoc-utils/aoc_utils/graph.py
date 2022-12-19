@@ -6,12 +6,12 @@ except ImportError:
     from functools import lru_cache
     cache = lru_cache(None)
 import heapq
-from typing import TypeVar, Generic, Iterable, Callable, Tuple, Set, Iterator
+from typing import TypeVar, Generic, Iterable, Callable, Tuple, Set, Iterator, Union
 
 T = TypeVar("T")
 
-class Dijkstra:
-    def __init__(self, start, distances, predecessors):
+class Dijkstra(Generic[T]):
+    def __init__(self, start: T, distances: dict[T, int], predecessors: dict[T, T]):
         self.start = start
         self.distances = distances
         self.predecessors = predecessors
@@ -33,7 +33,7 @@ class Dijkstra:
 
 class NodeGraph(Generic[T], abc.ABC):
     @abc.abstractmethod
-    def edges(self, node: T) -> Iterable[T]:
+    def edges(self, node: T) -> Iterable[Tuple[int, T]]:
         ...
 
     def dijkstra(self, start: T) -> Dijkstra:
@@ -67,13 +67,17 @@ class Graph(NodeGraph[T]):
     def add_edge(self, p: T, q: T, weight=1):
         self._edges[p].add((weight, q))
 
-    def edges(self, node: T) -> Set[T]:
+    def edges(self, node: T) -> Set[Tuple[int, T]]:
         return self._edges[node]
 
 
 class LazyGraph(NodeGraph[T]):
-    def __init__(self, neighbour_fn: Callable[[T], Iterable[Tuple[int, T]]]):
+    def __init__(self, neighbour_fn: Callable[[T], Iterable[Union[Tuple[int, T], T]]]):
         self.neighbour_fn = neighbour_fn
 
     def edges(self, node: T) -> Iterator[Tuple[int, T]]:
-        yield from self.neighbour_fn(node)
+        for n in self.neighbour_fn(node):
+            if isinstance(n, tuple):
+                yield n
+            else:
+                yield 1, n
