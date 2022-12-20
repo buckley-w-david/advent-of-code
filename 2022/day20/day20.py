@@ -1,30 +1,36 @@
 #!/usr/bin/env python
 
-# Grid, Direction
-# Direction.NORTH,SOUTH,EAST,WEST,NE,SE,NW,SW
-# g = Grid([[1, 2, 3], [4, 5, 6], [7, 8, 9]])
-# g.width, g.height, (y, x) in g (coords), g[(y, x)], g[(y, x)] = 5
-# for item in g => iterate over items in row major order
-# g.row_major(_with_index)() => iterate over items in row major order
-# g.column_major(_with_index)() => iterate over items in column major order
-# g.apply(func) => call func with each item
-# g.map(func) => return new Grid with results of func
-# g.ray_from((y, x), direction), yields items from a starting point in a direction
-# g.around(_with_index) => What it sounds like
-
-# Graph
-# g = Graph()
-# g.add_edge(from, to, weight=something)
-# g.dijkstra(start) => Dijkstra (has `distance_to`, and `path_to` methods)
-
-# ShuntingYard
-# Expression parser with configurable precedence for operations so you can throw out (B)EDMAS (no support for brackets)
 from aoc_utils import * # type: ignore
 
 from aocd import get_data
 
+class Wrapper:
+    def __init__(self, v):
+        self.value = v
 
 data = get_data(year=2022, day=20, block=True)
-print(data)
+lines = data.splitlines()
+key = 811589153
+il = list(map(Wrapper, map(lambda n: n*key, map(int, lines))))
+t = 0
 
-# submit(answer, part="a", day=20, year=2022)
+size = len(il) - 1
+
+result = il.copy()
+
+for _ in range(10):
+    for v in il:
+        src = result.index(v)
+        result.pop(src)
+        dst = (src + v.value) % size
+        result.insert(dst, v)
+
+for i, v in enumerate(result):
+    if v.value == 0:
+        start = i
+        break
+
+a=(result[(start+1000) % len(result)])
+b=(result[(start+2000) % len(result)])
+c=(result[(start+3000) % len(result)])
+print(a.value+b.value+c.value)
