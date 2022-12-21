@@ -1,4 +1,3 @@
-#!/usr/bin/env python
 
 from aoc_utils import * # type: ignore
 
@@ -19,13 +18,13 @@ for line in lines:
         monkey, l, op, r = m.groups()
         monkeys[monkey] = (l, op, r)
 
-def resolve(target):
+from typing import Union
+def resolve(target) -> Union[float, int]:
     v = monkeys[target]
-    if isinstance(v, int):
-        return v
-    else:
+    if isinstance(v, tuple):
         l, op, r = v
         return eval(f"({resolve(l)}){op}({resolve(r)})")
+    return v
     
 # Just by manual checking humn ends up in the left hand side
 l, _, r = monkeys["root"]
@@ -33,18 +32,13 @@ target = resolve(r)
 
 lower = 0
 upper = 10000000000000 # Manually determined this as an upper bound
-while lower != upper:
-    guess = (lower + upper) // 2
-    monkeys["humn"] = guess
-    result = resolve(l)
-    if result == target:
-        break
-    elif target > result:
-        # This is the reverse of the normal adjustment in a binary search
-        # Typically we'd adjust the lower bound upwards here
-        # However there is an inverse relationship between guess and the result
-        # Decreasing the guess increases the result
-        upper = guess - 1
-    else:
-        lower = guess + 1
-print(lower)
+def guess(n: int) -> Union[float, int]:
+    monkeys["humn"] = n
+    # Negate the result because there is an inverse relationship between guess and result
+    # larger guess means smaller value.
+    # This screws with the binary search implementation
+    # We can get around that by negating both target and result
+    return -resolve(l)
+
+idx = binary_search(lower, upper, guess, -target)
+print(idx)
