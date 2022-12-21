@@ -3,8 +3,24 @@
 from aoc_utils import * # type: ignore
 
 from aocd import get_data
+from sympy.polys.specialpolys import w_polys
 
 data = get_data(year=2022, day=21, block=True)
+data = """root: pppw + sjmn
+dbpl: 5
+cczh: sllz + lgvd
+zczc: 2
+ptdq: humn - dvpt
+dvpt: 3
+lfqf: 4
+humn: 5
+ljgn: 2
+sjmn: drzm * dbpl
+sllz: 4
+pppw: cczh / lfqf
+lgvd: ljgn * ptdq
+drzm: hmdt - zczc
+hmdt: 32"""
 lines = data.splitlines()
 
 monkeys = {}
@@ -45,6 +61,7 @@ class FreeVar:
         v = Fraction(v)
         return FreeVar(self.coefficient * v, self.constant * v)
 
+    # FIXME: This method is very wrong
     def __rtruediv__(self, v):
         v = Fraction(v)
         return FreeVar(v / self.coefficient, v / self.constant)
@@ -85,4 +102,4 @@ left = resolve(l)
 right = resolve(r)
 # Just by manual checking humn ends up in the left hand side
 # FIXME: For reasons I can't figure out I'm off by a negative sign
-print(-left.solve(right))
+print(left.solve(right))
