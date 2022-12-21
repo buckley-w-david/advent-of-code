@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "aoc-utils"
-version = "0.7.0"
+version = "0.8.4"
 description = ""
 authors = ["David Buckley <david@davidbuckley.ca>"]
 readme = "README.md"
