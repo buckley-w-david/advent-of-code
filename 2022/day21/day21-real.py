@@ -21,49 +21,37 @@ for line in lines:
 
 from fractions import Fraction
 class FreeVar:
-    def __init__(self):
-        self.coefficient = Fraction(1, 1)
-        self.constant = Fraction(0, 1)
+    def __init__(self, coefficient=Fraction(1), constant=Fraction(0)):
+        self.coefficient = coefficient
+        self.constant = constant
 
     def __radd__(self, v):
-        self.constant += Fraction(v)
-        return self
+        return FreeVar(self.coefficient, self.constant+Fraction(v))
 
     def __add__(self, v):
-        self.constant += Fraction(v)
-        return self
+        return FreeVar(self.coefficient, self.constant+Fraction(v))
 
     def  __rsub__(self, v):
-        self.constant = Fraction(v) - self.constant
-        return self
+        return FreeVar(self.coefficient, Fraction(v) - self.constant)
 
     def  __sub__(self, v):
-        self.constant = self.constant - Fraction(v)
-        return self
+        return FreeVar(self.coefficient, self.constant - Fraction(v))
 
     def __rmul__(self, v):
         v = Fraction(v)
-        self.coefficient *= v
-        self.constant *= v
-        return self
+        return FreeVar(self.coefficient * v, self.constant * v)
 
     def __mul__(self, v):
         v = Fraction(v)
-        self.coefficient *= v
-        self.constant *= v
-        return self
+        return FreeVar(self.coefficient * v, self.constant * v)
 
     def __rtruediv__(self, v):
         v = Fraction(v)
-        self.coefficient = v / self.coefficient
-        self.constant = v / self.constant
-        return self
+        return FreeVar(v / self.coefficient, v / self.constant)
 
     def __truediv__(self, v):
         v = Fraction(v)
-        self.coefficient /= v
-        self.constant /= v
-        return self
+        return FreeVar(self.coefficient / v, self.constant / v)
 
     def __repr__(self):
         return f"({self.coefficient}x + {self.constant})"
