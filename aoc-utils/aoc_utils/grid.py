@@ -15,6 +15,10 @@ class Direction(enum.Enum):
     NW = (-1, -1)
     SW = (1, -1)
 
+    @staticmethod
+    def cardinal():
+        return [Direction.NORTH, Direction.EAST, Direction.SOUTH, Direction.WEST]
+
 
 class Grid(Generic[T]):
     def __init__(self, arr: List[List[T]]) -> None:
