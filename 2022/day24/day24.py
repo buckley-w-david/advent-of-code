@@ -16,24 +16,23 @@ start = (0, lines[0].index("."))
 target = (height - 1, lines[-1].index("."))
 for y, line in enumerate(lines):
     for x, c in enumerate(line):
+        p = (y, x)
         if c == "#":
-            walls.add((y, x))
+            walls.add(p)
         elif c == ">":
-            blizzards.add(((y, x), Direction.EAST))
+            blizzards.add((p, Direction.EAST))
         elif c == "<":
-            blizzards.add(((y, x), Direction.WEST))
+            blizzards.add((p, Direction.WEST))
         elif c == "^":
-            blizzards.add(((y, x), Direction.NORTH))
+            blizzards.add((p, Direction.NORTH))
         elif c == "v":
-            blizzards.add(((y, x), Direction.SOUTH))
+            blizzards.add((p, Direction.SOUTH))
 
 
 def bliz_pos(blizzard, gen):
     ((y, x), d) = blizzard
     dy, dx = d.value
-    return ((y - 1 + dy * gen) % (height - 2)) + 1, (
-        (x - 1 + dx * gen) % (width - 2)
-    ) + 1
+    return ((y - 1 + dy * gen) % (height - 2)) + 1, ((x - 1 + dx * gen) % (width - 2)) + 1
 
 
 @cache
