@@ -20,7 +20,7 @@ nb = ["ipython", "jupyter-server"]
 
 [[package]]
 name = "aoc-utils"
-version = "0.8.4"
+version = "0.8.5"
 description = ""
 category = "main"
 optional = false
