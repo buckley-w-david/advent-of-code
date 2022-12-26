@@ -1,16 +1,9 @@
 #!/usr/bin/env python
 
-print("\033[2J\033[H") # ]]
-
 from pprint import pprint
-from aocd import get_data, submit
-import re
+from aocd import get_data
 
 data = get_data(year=2019, day=3, block=True)
-# data = """
-# R8,U5,L5,D3
-# U7,R6,D4,L4
-# """.strip()
 
 vectors = {
     'R': (0, 1),
@@ -23,7 +16,7 @@ directions = [direction.split(",") for direction in data.splitlines()]
 wires = [{}, {}]
 for i, wire in enumerate(directions):
     pos = (0, 0)
-    steps = 0
+    s = 0
     for instr in wire:
         y, x = pos
         vy, vx = vectors[instr[0]]
@@ -31,16 +24,16 @@ for i, wire in enumerate(directions):
         magnitude = int(instr[1:])
         if vx:
             for dx in range(1, magnitude+1):
-                steps += 1
+                s += 1
                 pos = (y, x+vx*dx)
                 if pos not in wires[i]:
-                    wires[i][pos] = steps
+                    wires[i][pos] = s
         else:
             for dy in range(1, magnitude+1):
-                steps += 1
+                s += 1
                 pos = (y+vy*dy, x)
                 if pos not in wires[i]:
-                    wires[i][pos] = steps
+                    wires[i][pos] = s
         pos = (y+vy*magnitude, x+vx*magnitude)
 
 def distance(p):

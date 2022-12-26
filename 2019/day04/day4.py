@@ -1,10 +1,6 @@
 #!/usr/bin/env python
 
-print("\033[2J\033[H") # ]]
-
-from pprint import pprint
-from aocd import get_data, submit
-import re
+from aocd import get_data
 
 data = get_data(year=2019, day=4, block=True)
 
@@ -12,6 +8,7 @@ start, end = map(int, data.split("-"))
 s = start // 100000
 count = 0
 
+# WTF is this shit?
 for a in range(s, 10):
     for b in range(a, 10):
         for c in range(b, 10):

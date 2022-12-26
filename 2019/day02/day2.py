@@ -1,14 +1,9 @@
 #!/usr/bin/env python
 
-print("\033[2J\033[H") # ]]
-
-from aocd import get_data, submit
+from aocd import get_data
 import re
 
 data = get_data(year=2019, day=2, block=True)
-# data = """
-# 1,9,10,3,2,3,11,0,99,30,40,50
-# """.strip()
 
 class IntCodeInterpreter:
     def __init__(self, program):
@@ -29,11 +24,11 @@ class IntCodeInterpreter:
             elif opcode == 99:
                 return
             else:
-                raise Exception("I am dumbdumb")
+                raise Exception("Bad")
 
     @staticmethod
     def parse(s):
-        return IntCodeInterpreter(list(map(int, re.findall("\d+", s))))
+        return IntCodeInterpreter(list(map(int, re.findall(r"\d+", s))))
 
 for noun in range(100):
     for verb in range(100):

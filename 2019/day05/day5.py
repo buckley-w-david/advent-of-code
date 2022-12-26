@@ -1,16 +1,10 @@
 #!/usr/bin/env python
 
-print("\033[2J\033[H") # ]]
-
-from io import open_code
-from aocd import get_data, submit
+from aocd import get_data
 import re
 import itertools
 
 data = get_data(year=2019, day=5, block=True)
-# data = """
-# 1002,4,3,4,33
-# """.strip()
 
 class IntCodeInterpreter:
     def __init__(self, program):
