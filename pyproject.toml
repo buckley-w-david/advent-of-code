@@ -5,7 +5,7 @@ description = ""
 authors = ["David Buckley <david@davidbuckley.ca>"]
 
 [tool.poetry.dependencies]
-python = ">=3.8,<3.11"
+python = ">=3.8,<4.0"
 advent-of-code-data = "^1.1.1"
 numpy = "^1.21.4"
 aoc-utils = { path = "aoc-utils" }
