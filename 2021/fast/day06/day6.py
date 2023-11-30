@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 
-from aocd import data, submit
+from aocd import data
 
 from itertools import groupby
 from functools import cache

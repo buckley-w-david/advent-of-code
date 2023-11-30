@@ -1,7 +1,5 @@
 #!/usr/bin/env python
 
-print("\033[2J\033[H") # ]]
-
 from pprint import pprint
 from aocd import get_data, submit
 from aoc_utils import Grid

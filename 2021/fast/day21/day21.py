@@ -1,16 +1,8 @@
 #!/usr/bin/env python
 
-print("\033[2J\033[H") # ]]
-
-from pprint import pprint
-from aocd import get_data, submit
-from itertools import cycle
+from aocd import get_data
 
 data = get_data(year=2021, day=21, block=True)
-# data = """
-# Player 1 starting position: 4
-# Player 2 starting position: 8
-# """.strip()
 
 import re
 p1, p2 = data.splitlines()

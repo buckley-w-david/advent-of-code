@@ -1,21 +1,8 @@
 #!/usr/bin/env python
 
-print("\033[2J\033[H") # ]]
-
-from aocd import get_data, submit
+from aocd import get_data
 
 data = get_data(year=2021, day=25, block=True)
-# data = """
-# v...>>.vv>
-# .vv>>.vv..
-# >>.>v>...v
-# >>v>>.>.v.
-# v>v.vv.v..
-# >.>>..v...
-# .vv..>.>v.
-# v.v..>>v.v
-# ....v..v.>
-# """.strip()
 
 lines = data.splitlines()
 height = len(lines)

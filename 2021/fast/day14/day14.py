@@ -1,29 +1,8 @@
 #!/usr/bin/env python
 
-from aocd import get_data, submit
+from aocd import get_data
 
 data = get_data(year=2021, day=14, block=True)
-
-# data = """
-# NNCB
-
-# CH -> B
-# HH -> N
-# CB -> H
-# NH -> C
-# HB -> C
-# HC -> B
-# HN -> C
-# NN -> C
-# BH -> H
-# NC -> B
-# NB -> B
-# BN -> B
-# BB -> N
-# BC -> B
-# CC -> N
-# CN -> C
-# """.strip()
 
 template, rules = data.split("\n\n")
 rules = [rule.split(" -> ") for rule in rules.splitlines()]

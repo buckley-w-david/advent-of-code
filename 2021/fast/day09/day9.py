@@ -3,13 +3,6 @@
 from aocd import get_data, submit
 
 data = get_data(year=2021, day=9, block=True)
-# data = """
-# 2199943210
-# 3987894921
-# 9856789892
-# 8767896789
-# 9899965678
-# """.strip()
 
 lines = [[int(c) for c in l] for l in data.split("\n")]
 

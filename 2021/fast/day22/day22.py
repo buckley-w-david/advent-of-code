@@ -1,7 +1,5 @@
 #!/usr/bin/env python
 
-print("\033[2J\033[H") # ]]
-
 from aocd import get_data, submit
 
 data = get_data(year=2021, day=22, block=True)

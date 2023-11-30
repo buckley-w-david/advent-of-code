@@ -13,7 +13,15 @@ occupied = set()
 
 t = 0
 
-from itertools import pairwise
+try:
+    from itertools import pairwise
+except ImportError:
+    from itertools import tee
+
+    def pairwise(iterable):
+        a, b = tee(iterable)
+        next(b, None)
+        return zip(a, b)
 
 for l in isl:
     points = chunk(l, 2)

@@ -1,21 +1,9 @@
 #!/usr/bin/env python
 
-from aocd import get_data, submit
+from aocd import get_data
 from aoc_utils import Grid, Graph
 
 data = get_data(year=2021, day=15, block=True)
-# data = """
-# 1163751742
-# 1381373672
-# 2136511328
-# 3694931569
-# 7463417111
-# 1319128137
-# 1359912421
-# 3125421639
-# 1293138521
-# 2311944581
-# """.strip()
 
 rows = data.splitlines()
 gg = [[int(c) for c in row] for row in rows]

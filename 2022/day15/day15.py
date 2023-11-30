@@ -21,12 +21,12 @@ for sx, sy, bx, by in isl:
 
 edge = 4000000
 
-for (sx, sy), (_, _, r) in d.items():
-    for t in range(r+1):
-        for cx, cy in [( sx - r - 1 + t, sy - t ), ( sx - r - 1 + t, sy + t ), ( sx + r + 1 - t, sy - t ), ( sx + r + 1 - t, sy + t )]:
-            if 0 <= cx <= edge and 0 <= cy <= edge:
-                for sensor, (_, _, r) in d.items():
-                    if dist((cx, cy), sensor) <= r:
-                        break
-                else:
-                    print( cx * 4000000 + cy )
+# for (sx, sy), (_, _, r) in d.items():
+#     for t in range(r+1):
+#         for cx, cy in [( sx - r - 1 + t, sy - t ), ( sx - r - 1 + t, sy + t ), ( sx + r + 1 - t, sy - t ), ( sx + r + 1 - t, sy + t )]:
+#             if 0 <= cx <= edge and 0 <= cy <= edge:
+#                 for sensor, (_, _, r) in d.items():
+#                     if dist((cx, cy), sensor) <= r:
+#                         break
+#                 else:
+#                     print( cx * 4000000 + cy )

@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 
-from collections import Counter, defaultdict
-from aocd import get_data, submit
+from collections import defaultdict
+from aocd import get_data
 import numpy as np
 from numpy.linalg import matrix_power
 

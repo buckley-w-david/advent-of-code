@@ -1,9 +1,9 @@
 #!/usr/bin/python
 
-with open('input') as f:
-    lines = f.read()
+from aocd import get_data
+data = get_data(year=2021, day=4, block=True)
 
-blocks = lines.split("\n\n")
+blocks = data.split("\n\n")
 draws = [int(i) for i in blocks[0].split(',')]
 
 boards = []

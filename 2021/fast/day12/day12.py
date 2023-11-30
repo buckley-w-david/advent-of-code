@@ -1,19 +1,10 @@
 #!/usr/bin/env python
 
-from aocd import get_data, submit
+from aocd import get_data
 
 from collections import defaultdict
 
 data = get_data(year=2021, day=12, block=True)
-# data = """
-# start-A
-# start-b
-# A-c
-# A-b
-# b-d
-# A-end
-# b-end
-# """.strip()
 
 graph = defaultdict(set)
 
@@ -40,4 +31,3 @@ def visit(node, history, a):
     return s
 
 print(visit("start", list(), None))
-# submit(s)

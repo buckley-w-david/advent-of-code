@@ -1,5 +1,7 @@
-with open('input') as f:
-    lines = f.readlines()
+from aocd import get_data
+
+data = get_data(year=2021, day=2, block=True)
+lines = data.splitlines()
 
 depth = 0
 hor = 0

@@ -50,17 +50,6 @@ choice = {
     }
 }
 
-# Part A
-
-total = 0
-for line in lines:
-    a, b = line.split()
-    total += score[a][b]
-
-print(total)
-
-# Part B
-
 total = 0
 for line in lines:
     a, b = line.split()

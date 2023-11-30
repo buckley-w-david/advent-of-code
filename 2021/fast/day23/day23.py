@@ -1,21 +1,8 @@
 #!/usr/bin/env python
 
-print("\033[2J\033[H") # ]]
-
 from aoc_utils import Graph
 import re
 
-data = """
-#############
-#...........#
-###B#C#B#D###
-  #D#C#B#A#
-  #D#B#A#C#
-  #A#D#C#A#
-  #########
-""".strip()
-
-# PROD
 data = """
 #############
 #...........#

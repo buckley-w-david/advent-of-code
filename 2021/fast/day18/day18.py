@@ -1,10 +1,7 @@
 #!/usr/bin/env python
 
-# print("\033[2J\033[H") # ]]
+from aocd import get_data
 
-from aocd import get_data, submit
-
-from pprint import pprint
 from math import floor, ceil
 from copy import deepcopy
 

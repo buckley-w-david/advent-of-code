@@ -1,16 +1,9 @@
 #!/usr/bin/env python
 
-print("\033[2J\033[H") # ]]
-
-from aocd import get_data, submit
+from aocd import get_data
 
 data = get_data(year=2021, day=17, block=True)
-data = """
-target area: x=29..73, y=-248..-194
-""".strip()
 
-# data = "target area: x=20..30, y=-10..-5"
-print(data)
 import re
 
 target = re.match(r"target area: x=(-?\d+)..(-?\d+), y=(-?\d+)..(-?\d+)", data)

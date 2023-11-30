@@ -1,3 +1,4 @@
+#!/usr/bin/env python
 
 from aoc_utils import * # type: ignore
 

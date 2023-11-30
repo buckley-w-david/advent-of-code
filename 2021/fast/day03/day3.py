@@ -56,8 +56,10 @@ def part_two(lines):
     return ogr*co2
 
 
-with open('input') as f:
-    lines = [l.strip() for l in f.readlines()]
+from aocd import get_data
+
+data = get_data(year=2021, day=11, block=True)
+lines = [l.strip() for l in data.splitlines()]
 
 print(f"Part 1: {part_one(lines)}")
 print(f"Part 2: {part_two(lines)}")

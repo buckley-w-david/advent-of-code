@@ -1,21 +1,9 @@
 #!/usr/bin/env python
 
-from aocd import get_data, submit
+from aocd import get_data
 from aoc_utils import Grid
 
 data = get_data(year=2021, day=11, block=True)
-# data = """
-# 5483143223
-# 2745854711
-# 5264556173
-# 6141336146
-# 6357385478
-# 4167524645
-# 2176841721
-# 6882881134
-# 4846848554
-# 5283751526
-# """.strip()
 
 class Oct:
     def __init__(self, n):

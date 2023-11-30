@@ -3,7 +3,6 @@
 from aocd import get_data
 
 data = get_data(year=2021, day=7, block=True)
-# data = "16,1,2,0,4,2,7,1,2,14"
 
 pos = [int(l) for l in data.split(",")]
 

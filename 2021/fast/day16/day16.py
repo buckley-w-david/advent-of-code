@@ -1,13 +1,7 @@
 #!/usr/bin/env python
 
-print("\033[2J\033[H") # ]]
-print("STARTING")
-
 from more_itertools import chunked, take
-from aocd import get_data, submit
-from aoc_utils import Grid, Graph
-
-import re
+from aocd import get_data
 
 bin = {
     0: "0000",
@@ -29,7 +23,6 @@ bin = {
 }
 
 data = get_data(year=2021, day=16, block=True)
-# data = """CE00C43D881120""".strip()
 data = ''.join([bin[int(c, 16)] for c in data])
 
 def parse_packet(packet):

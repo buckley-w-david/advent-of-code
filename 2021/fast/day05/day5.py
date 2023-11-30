@@ -2,8 +2,10 @@
 
 from collections import Counter
 
-with open('input') as f:
-    lines = f.readlines()
+from aocd import get_data
+
+data = get_data(year=2021, day=5, block=True)
+lines = data.splitlines()
 
 points = []
 

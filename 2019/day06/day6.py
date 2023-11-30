@@ -6,9 +6,10 @@ from aoc_utils import *
 data = get_data(year=2019, day=6)
 lines = data.splitlines()
 
-t = 0
+orbit_pairs = [line.split(")") for line in lines]
+graph = Graph()
+for i, o in orbit_pairs:
+    graph.add_edge(i, o)
+    graph.add_edge(o, i)
 
-for line in lines:
-    pass
-
-print(t)
+print(len(graph.dijkstra("YOU").path_to("SAN"))-3)

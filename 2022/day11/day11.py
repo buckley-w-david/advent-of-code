@@ -53,4 +53,5 @@ for round in range(10000):
                 target = f
             monkeys[target]["items"].append(new % factor)
 
-print([(m["n"], m["count"]) for m in sorted(monkeys.values(), key=lambda m: m["count"], reverse=True)])
+l = [(m["n"], m["count"]) for m in sorted(monkeys.values(), key=lambda m: m["count"], reverse=True)]
+print(l[0][1] * l[1][1])
