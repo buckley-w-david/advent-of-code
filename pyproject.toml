@@ -5,12 +5,12 @@ description = ""
 authors = ["David Buckley <david@davidbuckley.ca>"]
 
 [tool.poetry.dependencies]
-python = ">=3.8,<4.0"
-advent-of-code-data = "^1.1.1"
-numpy = "^1.21.4"
+python = ">=3.9,<4.0"
 aoc-utils = { path = "aoc-utils" }
-sympy = "^1.9"
-more-itertools = "^8.12.0"
+advent-of-code-data = "^2.0.1"
+numpy = "^1.26.2"
+sympy = "^1.12"
+more-itertools = "^10.1.0"
 
 [tool.poetry.dev-dependencies]
 polyglot = { git = "https://github.com/buckley-w-david/polyglot.git" }
