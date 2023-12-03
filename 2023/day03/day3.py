@@ -1,24 +1,58 @@
-# Grid, Direction
-# Direction.NORTH,SOUTH,EAST,WEST,NE,SE,NW,SW
-# g = Grid([[1, 2, 3], [4, 5, 6], [7, 8, 9]])
-# g.width, g.height, (y, x) in g (coords), g[(y, x)], g[(y, x)] = 5
-# for item in g => iterate over items in row major order
-# g.row_major(_with_index)() => iterate over items in row major order
-# g.column_major(_with_index)() => iterate over items in column major order
-# g.apply(func) => call func with each item
-# g.map(func) => return new Grid with results of func
-# g.ray_from((y, x), direction), yields items from a starting point in a direction
-# g.around(_with_index) => What it sounds like
-
-# Graph
-# g = Graph()
-# g.add_edge(from, to, weight=something)
-# g.dijkstra(start) => Dijkstra (has `distance_to`, and `path_to` methods)
-
-# ShuntingYard
-# Expression parser with configurable precedence for operations so you can throw out (B)EDMAS (no support for brackets)
-
+from collections import defaultdict
+import re
 from aoc_utils import * # type: ignore
 from aocd import get_data
 
 data = get_data(year=2023, day=3, block=True)
+lines = data.splitlines()
+
+def part_one(lines):
+    part_numbers = []
+    g = Grid([[c for c in line] for line in lines])
+    for y, line in enumerate(lines):
+        for m in re.finditer(r"(\d+)", line):
+            start, end = m.span()
+            n = int(m.group(1))
+            adj_symbol = False
+            for x in range(start, end):
+                pc = (y, x)
+                for _, c in g.around_with_index(pc):
+                    if not (c.isdigit() or c == '.'):
+                        adj_symbol = True
+                        break
+                if adj_symbol:
+                    break
+            if adj_symbol:
+                part_numbers.append(n)
+
+    return sum(part_numbers)
+
+def part_two(lines):
+    g = Grid([[c for c in line] for line in lines])
+
+    numbers = defaultdict(dict)
+    for y, line in enumerate(lines):
+        for m in re.finditer(r"(\d+)", line):
+            numbers[y][m.span()] = int(m.group(1))
+
+    stars = set()
+    for p, c in g.row_major_with_index():
+        if c == '*':
+            stars.add(p)
+
+    s = 0
+    for p in stars:
+        adj = set()
+        for (y, x), _ in g.around_with_index(p):
+            for (sx, ex) in numbers[y]:
+                if sx <= x < ex:
+                    adj.add((y, (sx, ex)))
+        if len(adj) == 2:
+            prod = 1
+            for (y, span) in adj:
+                prod *= numbers[y][span]
+            s += prod
+    return s
+
+print(part_one(lines))
+print(part_two(lines))
