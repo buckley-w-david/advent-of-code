@@ -18,7 +18,7 @@
 # ShuntingYard
 # Expression parser with configurable precedence for operations so you can throw out (B)EDMAS (no support for brackets)
 
-from aoc_utils import * # type: ignore
+from aoc_utils import *
 from aocd import get_data
 
 data = get_data(year=REPLACE_YEAR, day=REPLACE_DAY, block=True)
