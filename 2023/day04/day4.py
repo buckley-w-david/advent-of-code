@@ -1,24 +1,30 @@
-# Grid, Direction
-# Direction.NORTH,SOUTH,EAST,WEST,NE,SE,NW,SW
-# g = Grid([[1, 2, 3], [4, 5, 6], [7, 8, 9]])
-# g.width, g.height, (y, x) in g (coords), g[(y, x)], g[(y, x)] = 5
-# for item in g => iterate over items in row major order
-# g.row_major(_with_index)() => iterate over items in row major order
-# g.column_major(_with_index)() => iterate over items in column major order
-# g.apply(func) => call func with each item
-# g.map(func) => return new Grid with results of func
-# g.ray_from((y, x), direction), yields items from a starting point in a direction
-# g.around(_with_index) => What it sounds like
-
-# Graph
-# g = Graph()
-# g.add_edge(from, to, weight=something)
-# g.dijkstra(start) => Dijkstra (has `distance_to`, and `path_to` methods)
-
-# ShuntingYard
-# Expression parser with configurable precedence for operations so you can throw out (B)EDMAS (no support for brackets)
-
 from aoc_utils import * # type: ignore
 from aocd import get_data
 
 data = get_data(year=2023, day=4, block=True)
+lines = data.splitlines()
+
+def winning_matches(line: str) -> int:
+    win, have = line.split("|")
+    return len(set(ints(win)[1:]) & set(ints(have)))
+
+def part_one(data):
+    s = 0
+    for line in data.splitlines():
+        matches = winning_matches(line)
+        if matches > 0:
+            s += 2**(matches-1)
+    return s
+
+def part_two(data):
+    lines = data.splitlines()
+    counts = [0]*len(lines)
+    for i, line in enumerate(lines):
+        counts[i] += 1
+        matches = winning_matches(line)
+        for j in range(1, matches+1):
+            counts[i+j] += counts[i]
+    return sum(counts)
+
+print(part_one(data))
+print(part_two(data))
