@@ -1,24 +1,33 @@
-# Grid, Direction
-# Direction.NORTH,SOUTH,EAST,WEST,NE,SE,NW,SW
-# g = Grid([[1, 2, 3], [4, 5, 6], [7, 8, 9]])
-# g.width, g.height, (y, x) in g (coords), g[(y, x)], g[(y, x)] = 5
-# for item in g => iterate over items in row major order
-# g.row_major(_with_index)() => iterate over items in row major order
-# g.column_major(_with_index)() => iterate over items in column major order
-# g.apply(func) => call func with each item
-# g.map(func) => return new Grid with results of func
-# g.ray_from((y, x), direction), yields items from a starting point in a direction
-# g.around(_with_index) => What it sounds like
-
-# Graph
-# g = Graph()
-# g.add_edge(from, to, weight=something)
-# g.dijkstra(start) => Dijkstra (has `distance_to`, and `path_to` methods)
-
-# ShuntingYard
-# Expression parser with configurable precedence for operations so you can throw out (B)EDMAS (no support for brackets)
-
+import re
 from aoc_utils import * # type: ignore
 from aocd import get_data
 
 data = get_data(year=2023, day=6, block=True)
+
+def part_one(data):
+    t, d = data.splitlines()
+    times = ints(t)
+    distances = ints(d)
+    races = zip(times, distances)
+
+    margin = 1
+    for time, distance in races:
+        better = 0
+        for speed in range(time):
+            my_distance = speed*(time-speed)
+            better += my_distance > distance
+        margin *= better
+    return margin
+
+def part_two(data):
+    t, d = data.splitlines()
+    time = int(''.join(re.findall(r"\d", t)))
+    distance = int(''.join(re.findall(r"\d", d)))
+    better = 0
+    for speed in range(time):
+        my_distance = speed*(time-speed)
+        better += my_distance > distance
+    return better
+
+print(part_one(data))
+print(part_two(data))
