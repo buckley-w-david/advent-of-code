@@ -34,14 +34,28 @@ def part_one(seeds, mappings):
                     break
     return min(seeds)
 
+def non_negative_integers():
+    n = 0
+    while True:
+        yield n
+        n += 1
 
-"""
-# Part 2 plan
-The numbers are too large to actually forward calculate from seeds to location
+def find_source_for_destination(mapping, destination: int):
+    for (ss, _), (ds, de) in mapping.items():
+        if ds <= destination < de:
+            return ss + (destination - ds)
 
-Instead calculate backwards from the min location to the seeds to find what seed is needed to get that.
-It is unlikely any seed exactly hits the minimum (which is 0), so we will have to keep track of ranges.
+def part_two(seeds, mappings):
+    seed_ranges = [(seeds[i], seeds[i]+seeds[i+1]) for i in range(0, len(seeds), 2)]
+    for location in non_negative_integers():
+        target = location
+        for (src, dst) in reversed(steps):
+            n = find_source_for_destination(mappings[src][dst], target)
+            if n is not None: target  = n
 
-The min is either the smallest value that hits the lowest range in location, or the smallest value in an earlier
-mapping that misses a later mapping (and so carries through)
-"""
+        for (seed_start, seed_end) in seed_ranges:
+            if seed_start <= target < seed_end:
+                return location
+
+print(part_one(seeds, mappings))
+print(part_two(seeds, mappings))
