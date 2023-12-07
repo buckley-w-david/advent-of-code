@@ -98,6 +98,7 @@ def part_two(data):
                 card, _ = common[0]
                 counts[card] += jokers
             else:
+                # Oops! All Jokers!
                 counts[14] = jokers
 
             self.counts = sorted(counts.values())
