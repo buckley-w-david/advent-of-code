@@ -23,7 +23,7 @@ HAND_TYPES = [
 
 @total_ordering
 class Hand:
-    def __init__(self, cards: list[str]):
+    def __init__(self, cards: list[int]):
         self.cards = cards
         self.counts = sorted(Counter(cards).values())
 
@@ -53,7 +53,7 @@ class Hand:
         assert False
 
 class HandWithJokers(Hand):
-    def __init__(self, cards: list[str]):
+    def __init__(self, cards: list[int]):
         self.cards = cards
         counts = Counter(cards)
         jokers = counts.pop(1, 0)
