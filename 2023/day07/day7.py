@@ -21,38 +21,54 @@ HAND_TYPES = [
     [1, 1, 1, 1, 1]
 ]
 
+@total_ordering
+class Hand:
+    def __init__(self, cards: list[str]):
+        self.cards = cards
+        self.counts = sorted(Counter(cards).values())
+
+    def __lt__(self, other: 'Hand'):
+        # Simple case: Their score is strictly larger
+        if self.score != other.score:
+            return self.score < other.score
+
+        # Complex case, check cards in order to find who has the first card that is larger
+        for my_card, their_card in zip(self.cards, other.cards):
+            if my_card != their_card:
+                return my_card < their_card
+
+        # Equal
+        return False
+
+    def __eq__(self, other: 'Hand'):
+        return self.cards == other.cards
+
+    @property
+    def score(self):
+        for i, l in enumerate(HAND_TYPES):
+            if l == self.counts:
+                return len(HAND_TYPES)-i
+
+        # Should be impossible
+        assert False
+
+class HandWithJokers(Hand):
+    def __init__(self, cards: list[str]):
+        self.cards = cards
+        counts = Counter(cards)
+        jokers = counts.pop(1, 0)
+        common = counts.most_common(1)
+
+        if common:
+            card, _ = common[0]
+            counts[card] += jokers
+        else:
+            # Oops! All jokers
+            counts[14] = jokers
+
+        self.counts = sorted(counts.values())
+
 def part_one(data):
-    @total_ordering
-    class Hand:
-        def __init__(self, cards: list[str]):
-            self.cards = cards
-            self.counts = sorted(Counter(cards).values())
-
-        def __lt__(self, other: 'Hand'):
-            # Simple case: Their score is strictly larger
-            if self.score != other.score:
-                return self.score < other.score
-
-            # Complex case, check cards in order to find who has the first card that is larger
-            for my_card, their_card in zip(self.cards, other.cards):
-                if my_card != their_card:
-                    return my_card < their_card
-
-            # Equal
-            return False
-
-        def __eq__(self, other: 'Hand'):
-            return self.cards == other.cards
-
-        @property
-        def score(self):
-            for i, l in enumerate(HAND_TYPES):
-                if l == self.counts:
-                    return len(HAND_TYPES)-i
-
-            # Should be impossible
-            assert False
-
     lines = data.splitlines()
 
     CARD_LOOKUP = {
@@ -85,49 +101,6 @@ def part_one(data):
     return total
 
 def part_two(data):
-
-    @total_ordering
-    class Hand:
-        def __init__(self, cards: list[str]):
-            self.cards = cards
-            counts = Counter(cards)
-            jokers = counts.pop(1, 0)
-            common = counts.most_common(1)
-
-            if common:
-                card, _ = common[0]
-                counts[card] += jokers
-            else:
-                # Oops! All Jokers!
-                counts[14] = jokers
-
-            self.counts = sorted(counts.values())
-
-        def __lt__(self, other: 'Hand'):
-            # Simple case: Their score is strictly larger
-            if self.score != other.score:
-                return self.score < other.score
-
-            # Complex case, check cards in order to find who has the first card that is larger
-            for my_card, their_card in zip(self.cards, other.cards):
-                if my_card != their_card:
-                    return my_card < their_card
-
-            # Equal
-            return False
-
-        def __eq__(self, other: 'Hand'):
-            return self.cards == other.cards
-
-        @property
-        def score(self):
-            for i, l in enumerate(HAND_TYPES):
-                if l == self.counts:
-                    return len(HAND_TYPES)-i
-
-            # Should be impossible
-            assert False
-
     lines = data.splitlines()
 
     CARD_LOOKUP = {
@@ -149,7 +122,7 @@ def part_two(data):
     game = []
     for line in lines:
         cards, b = line.split()
-        hand = Hand([CARD_LOOKUP[c] for c in cards])
+        hand = HandWithJokers([CARD_LOOKUP[c] for c in cards])
         bid = int(b)
         game.append((hand, bid))
 
