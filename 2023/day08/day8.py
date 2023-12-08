@@ -6,27 +6,31 @@ from aoc_utils import * # type: ignore
 from aocd import get_data
 
 data = get_data(year=2023, day=8, block=True)
-instructions, network = data.split("\n\n")
 
-nodes = {}
-for line in network.splitlines():
-    m = re.match(r"(.*) = \((.*), (.*)\)", line)
-    nodes[m.group(1)] = (m.group(2), m.group(3))
+def parse_map(data):
+    ins, network = data.split("\n\n")
 
+    instructions = [0 if i == 'L' else 1 for i in ins]
 
-def part_one(instructions, nodes):
+    nodes = {}
+    for line in network.splitlines():
+        m = re.match(r"(.*) = \((.*), (.*)\)", line)
+        nodes[m.group(1)] = (m.group(2), m.group(3))
+
+    return instructions, nodes
+
+def part_one(data):
+    instructions, nodes = parse_map(data)
     current = 'AAA'
     steps = 0
     for ins in cycle(instructions):
-        if ins == 'L':
-            current = nodes[current][0]
-        else:
-            current = nodes[current][1]
+        current = nodes[current][ins]
         steps += 1
         if current == 'ZZZ':
             return steps
 
-def part_two(instructions, nodes):
+def part_two(data):
+    instructions, nodes = parse_map(data)
     current = [
         location for location in nodes if location.endswith('A')
     ]
@@ -35,10 +39,7 @@ def part_two(instructions, nodes):
     for i, c in enumerate(current):
         steps = 0
         for ins in cycle(instructions):
-            if ins == 'L':
-                c = nodes[c][0]
-            else:
-                c = nodes[c][1]
+            c = nodes[c][ins]
             steps += 1
             if c.endswith('Z'):
                 cycles[i] = steps
@@ -46,5 +47,5 @@ def part_two(instructions, nodes):
 
     return lcm(*cycles)
 
-print(part_one(instructions, nodes))
-print(part_two(instructions, nodes))
+print(part_one(data))
+print(part_two(data))
