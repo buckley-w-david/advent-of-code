@@ -1,24 +1,50 @@
-# Grid, Direction
-# Direction.NORTH,SOUTH,EAST,WEST,NE,SE,NW,SW
-# g = Grid([[1, 2, 3], [4, 5, 6], [7, 8, 9]])
-# g.width, g.height, (y, x) in g (coords), g[(y, x)], g[(y, x)] = 5
-# for item in g => iterate over items in row major order
-# g.row_major(_with_index)() => iterate over items in row major order
-# g.column_major(_with_index)() => iterate over items in column major order
-# g.apply(func) => call func with each item
-# g.map(func) => return new Grid with results of func
-# g.ray_from((y, x), direction), yields items from a starting point in a direction
-# g.around(_with_index) => What it sounds like
-
-# Graph
-# g = Graph()
-# g.add_edge(from, to, weight=something)
-# g.dijkstra(start) => Dijkstra (has `distance_to`, and `path_to` methods)
-
-# ShuntingYard
-# Expression parser with configurable precedence for operations so you can throw out (B)EDMAS (no support for brackets)
+import re
+from math import lcm
+from itertools import cycle
 
 from aoc_utils import * # type: ignore
 from aocd import get_data
 
 data = get_data(year=2023, day=8, block=True)
+instructions, network = data.split("\n\n")
+
+nodes = {}
+for line in network.splitlines():
+    m = re.match(r"(.*) = \((.*), (.*)\)", line)
+    nodes[m.group(1)] = (m.group(2), m.group(3))
+
+
+def part_one(instructions, nodes):
+    current = 'AAA'
+    steps = 0
+    for ins in cycle(instructions):
+        if ins == 'L':
+            current = nodes[current][0]
+        else:
+            current = nodes[current][1]
+        steps += 1
+        if current == 'ZZZ':
+            return steps
+
+def part_two(instructions, nodes):
+    current = [
+        location for location in nodes if location.endswith('A')
+    ]
+
+    cycles = [0]*len(current)
+    for i, c in enumerate(current):
+        steps = 0
+        for ins in cycle(instructions):
+            if ins == 'L':
+                c = nodes[c][0]
+            else:
+                c = nodes[c][1]
+            steps += 1
+            if c.endswith('Z'):
+                cycles[i] = steps
+                break
+
+    return lcm(*cycles)
+
+print(part_one(instructions, nodes))
+print(part_two(instructions, nodes))
