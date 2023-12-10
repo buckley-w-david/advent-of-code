@@ -22,14 +22,31 @@ from aoc_utils import * # type: ignore
 from aocd import get_data
 
 data = get_data(year=2023, day=10, block=True)
-g = Grid([[c for c in line] for line in data.splitlines()])
+lines = data.splitlines()
+horizontal = ['-']*len(lines[0])
+vertical = ['|']*len(lines[0])
+higher_res = []
+for line in lines:
+    l = zip(line, horizontal)
+    hl = zip(vertical, horizontal)
+    higher_res.append(''.join(''.join(t) for t in l))
+    higher_res.append(''.join(''.join(t) for t in hl))
+g = Grid([[c for c in line] for line in higher_res])
 pipes = {}
 start = None
+
+def write_c(s, colour=False):
+    if colour:
+        print(end=f'\N{ESC}[31m{s}\u001b[0m') # ]]
+        pass
+    else:
+        print(end=s)
 
 def display_pipes(network):
     for y in range(g.height):
         for x in range(g.width):
             p = (y, x)
+
             if p in network:
                 c = g[p]
                 match c:
@@ -39,11 +56,9 @@ def display_pipes(network):
                     case 'J': c = "┘"
                     case '7': c = "┐"
                     case 'F': c = "┌"
-                print(c, end='')
-            elif p == start:
-                print(end='\N{ESC}[31mS\u001b[0m')
+                write_c(c, colour=(not y&1 and not x&1))
             else:
-                print(end='.')
+                write_c(' ', colour=(not y&1 and not x&1))
         print()
 
 for ((y, x), c) in g.row_major_with_index():
@@ -109,13 +124,40 @@ for p in pipes:
         else:
             display_pipes(network)
             assert start in pipes[p]
-            network.add(start)
-            print(int(len(network) / 2))
 
-            # print(g.width * g.height - len(outside) - len(network))
+            network.add(start)
+            print(len(network) / 2)
+
+            # I know from visual inspection that (0, 0) is not enclosed by the loop
+            outside = set()
+            queue = set()
+            queue.add((0, 0))
+            while queue:
+                p = queue.pop()
+                if p in outside:
+                    # Already visited this tile
+                    continue
+                elif p in network:
+                    # Blocked by a pipe
+                    continue
+                outside.add(p)
+                for dy in range(-1, 2):
+                    for dx in range(-1, 2):
+                        cy = p[0] + dy
+                        cx = p[1] + dx
+                        if 0 <= cy < g.height and 0 <= cx < g.width and (cy, cx) != p:
+                            queue.add((cy, cx))
+            surrounded = 0
+            for (y, x), _ in g.row_major_with_index():
+                if not y&1 and not x&1:
+                    # This is an original tile
+                    if (y, x) not in network and (y, x) not in outside:
+                        surrounded += 1
+            print(surrounded)
             break
+
+
 
         del pipes[start]
 
 # 831 too high
-
