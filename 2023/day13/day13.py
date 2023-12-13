@@ -47,21 +47,15 @@ def smudged_reflection(chunk):
     for y in range(len(rows)):
         for x in range(len(columns)):
             old = rows[y][x]
-            rows[y][x] = '.' if old == '#' else '#'
-            columns[x][y] = '.' if old == '#' else '#'
+            rows[y][x] = columns[x][y] = '.' if old == '#' else '#'
 
-            col_reflections = set(find_reflections(columns))
-
-            for reflection in col_reflections - {original_col_reflection}:
+            if reflection := next((l for l in find_reflections(columns) if l != original_col_reflection), None):
                 return reflection
 
-            row_reflections = set(find_reflections(rows))
-
-            for reflection in row_reflections - {original_row_reflection}:
+            if reflection := next((l for l in find_reflections(rows) if l != original_row_reflection), None):
                 return 100*reflection
 
-            rows[y][x] = old
-            columns[x][y] = old
+            rows[y][x] = columns[x][y] = old
 
     assert False
 
