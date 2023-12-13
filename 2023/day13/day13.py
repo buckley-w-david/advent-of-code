@@ -1,24 +1,78 @@
-# Grid, Direction
-# Direction.NORTH,SOUTH,EAST,WEST,NE,SE,NW,SW
-# g = Grid([[1, 2, 3], [4, 5, 6], [7, 8, 9]])
-# g.width, g.height, (y, x) in g (coords), g[(y, x)], g[(y, x)] = 5
-# for item in g => iterate over items in row major order
-# g.row_major(_with_index)() => iterate over items in row major order
-# g.column_major(_with_index)() => iterate over items in column major order
-# g.apply(func) => call func with each item
-# g.map(func) => return new Grid with results of func
-# g.ray_from((y, x), direction), yields items from a starting point in a direction
-# g.around(_with_index) => What it sounds like
-
-# Graph
-# g = Graph()
-# g.add_edge(from, to, weight=something)
-# g.dijkstra(start) => Dijkstra (has `distance_to`, and `path_to` methods)
-
-# ShuntingYard
-# Expression parser with configurable precedence for operations so you can throw out (B)EDMAS (no support for brackets)
-
 from aoc_utils import * # type: ignore
 from aocd import get_data
 
 data = get_data(year=2023, day=13, block=True)
+
+def parse_mirrors(chunk):
+    rows = [list(l) for l in chunk.splitlines()]
+    columns = [['.']*len(rows) for _ in range(len(rows[0]))]
+    for x in range(len(rows[0])):
+        for y in range(len(rows)):
+            columns[x][y] = rows[y][x]
+    return rows, columns
+
+def find_reflections(mirrors):
+    for line in range(len(mirrors)-1):
+        left_min = max(2*line+2 - len(mirrors), 0)
+        left_max = line+1
+
+        right_min = line+1
+        right_max = line+1+(left_max-left_min)
+
+        before_line = mirrors[left_min:left_max]
+        after_line = mirrors[right_min:right_max]
+
+        if before_line == after_line[::-1]:
+            yield left_max
+
+def part_one(data):
+    chunks = data.split("\n\n")
+
+    t = 0
+    for chunk in chunks:
+        rows, columns = parse_mirrors(chunk)
+        if line := next(find_reflections(columns), None):
+            t += line
+        elif line := next(find_reflections(rows), None):
+            t += 100*line
+        else:
+            assert False
+    return t
+
+def smudged_reflection(chunk):
+    rows, columns = parse_mirrors(chunk)
+    original_col_reflection = next(find_reflections(columns), None)
+    original_row_reflection = next(find_reflections(rows), None)
+
+    for y in range(len(rows)):
+        for x in range(len(columns)):
+            old = rows[y][x]
+            rows[y][x] = '.' if old == '#' else '#'
+            columns[x][y] = '.' if old == '#' else '#'
+
+            col_reflections = set(find_reflections(columns))
+
+            for reflection in col_reflections - {original_col_reflection}:
+                return reflection
+
+            row_reflections = set(find_reflections(rows))
+
+            for reflection in row_reflections - {original_row_reflection}:
+                return 100*reflection
+
+            rows[y][x] = old
+            columns[x][y] = old
+
+    assert False
+
+def part_two(data):
+    chunks = data.split("\n\n")
+
+    t = 0
+    for chunk in chunks:
+        t += smudged_reflection(chunk)
+
+    return t
+
+print(part_one(data))
+print(part_two(data))
