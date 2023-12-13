@@ -1,24 +1,52 @@
-# Grid, Direction
-# Direction.NORTH,SOUTH,EAST,WEST,NE,SE,NW,SW
-# g = Grid([[1, 2, 3], [4, 5, 6], [7, 8, 9]])
-# g.width, g.height, (y, x) in g (coords), g[(y, x)], g[(y, x)] = 5
-# for item in g => iterate over items in row major order
-# g.row_major(_with_index)() => iterate over items in row major order
-# g.column_major(_with_index)() => iterate over items in column major order
-# g.apply(func) => call func with each item
-# g.map(func) => return new Grid with results of func
-# g.ray_from((y, x), direction), yields items from a starting point in a direction
-# g.around(_with_index) => What it sounds like
-
-# Graph
-# g = Graph()
-# g.add_edge(from, to, weight=something)
-# g.dijkstra(start) => Dijkstra (has `distance_to`, and `path_to` methods)
-
-# ShuntingYard
-# Expression parser with configurable precedence for operations so you can throw out (B)EDMAS (no support for brackets)
-
+from functools import cache
 from aoc_utils import * # type: ignore
 from aocd import get_data
 
 data = get_data(year=2023, day=12, block=True)
+
+@cache
+def solve(springs: str, groups: tuple) -> int:
+    if not groups:
+        # This is a hacky way of finding out we did it wrong
+        # If there are '#' left in the springs then we have over-provisioned
+        return int(all(s != '#' for s in springs))
+    elif len(springs) < sum(groups):
+        return 0
+    elif springs[0] == '.':
+        return solve(springs[1:], groups)
+
+    t = 0
+    if springs[0] == "?":
+        t += solve(springs[1:], groups)
+
+    current, *remaining = groups
+    potential = springs[:current]
+
+    # if the group formed by the current contigious spring number is all ? or #
+    # and there is enough room for the group to start at this location
+    if all(s != '.' for s in potential) and (len(springs) > current and springs[current] != '#' or len(springs) == current):
+        # count the group as starting here
+        t += solve(springs[current+1:], tuple(remaining))
+
+    return t
+
+def part_one(data):
+    t = 0
+    for line in data.splitlines():
+        springs, g = line.split()
+        groups = tuple(int(n) for n in g.split(','))
+        t += solve(springs, groups)
+
+    return t
+
+def part_two(data):
+    t = 0
+    for line in data.splitlines():
+        springs, g = line.split()
+        groups = tuple(int(n) for n in g.split(','))
+        t += solve('?'.join([springs]*5), groups * 5)
+
+    return t
+
+print(part_one(data))
+print(part_two(data))
