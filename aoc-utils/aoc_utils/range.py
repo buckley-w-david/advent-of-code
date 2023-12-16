@@ -26,12 +26,15 @@ class Range:
     def __repr__(self):
         return f'Range({self.start}, {self.stop}, {self.step})'
 
+    def __contains__(self, n: int) -> bool:
+        return self.start <= n and self.stop > n
+
     def includes(self, r: 'Range') -> bool:
         return self.start <= r.start and self.stop >= r.stop
 
     def inside(self, r: 'Range') -> bool:
         return self.start >= r.start and self.stop <= r.stop
-    
+
     def contains(self, r: 'Range') -> bool:
         return self.inside(r)
 

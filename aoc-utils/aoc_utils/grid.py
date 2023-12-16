@@ -53,6 +53,13 @@ class Grid(Generic[T]):
     def __iter__(self) -> Iterator[T]:
         return self.row_major()
 
+    def insert_row(self, y: int, row: List[T]):
+        self.arr.insert(y, row)
+
+    def insert_column(self, x: int, column: List[T]):
+        for value, row in zip(column, self.arr):
+            row.insert(x, value)
+
     def row_major_with_index(self) -> Iterator[Tuple[Tuple[int, int], T]]:
         for i in range(self.height):
             for j in range(self.width):

@@ -20,3 +20,8 @@ def chunk(l, n):
 
 def groups(l, n):
     return chunk(l, len(l)//n)
+
+def alternating(*iterables):
+    for values in zip(*iterables):
+        for value in values:
+            yield value
