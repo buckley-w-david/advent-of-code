@@ -1,17 +1,11 @@
 from aoc_utils import * # type: ignore
 from aocd import get_data
-import heapq
+from typing import cast
 
-from typing import NamedTuple
-
-class Direction(NamedTuple):
-    dx: int
-    dy: int
-
-EAST = Direction(1, 0)
-WEST = Direction(-1, 0)
-NORTH = Direction(0, -1)
-SOUTH = Direction(0, 1)
+EAST = (1, 0)
+WEST = (-1, 0)
+NORTH = (0, -1)
+SOUTH = (0, 1)
 
 data = get_data(year=2023, day=17, block=True)
 grid = Grid([[int(c) for c in l] for l in data.splitlines()])
@@ -22,15 +16,42 @@ grid = Grid([[int(c) for c in l] for l in data.splitlines()])
 start = (0, 0, EAST, 0)
 target = (grid.height-1, grid.width-1)
 
-def edges_with_weight(p):
+def crucible_neighbours(p):
     y, x, direction, streak = p
     dx, dy = direction
     prev_y, prev_x = y-dy, x-dx
 
     transitions = []
 
-    if (y, x) == target:
-        return
+    if p == start:
+        transitions.append((1, 0, SOUTH, 1))
+        transitions.append((0, 1, EAST, 1))
+    elif direction == NORTH or direction == SOUTH:
+        transitions.append((y, x+1, EAST, 1))
+        transitions.append((y, x-1, WEST, 1))
+    else:
+        transitions.append((y+1, x, SOUTH, 1))
+        transitions.append((y-1, x, NORTH, 1))
+
+    if 1 <= streak < 3:
+        transitions.append((y+dy, x+dx, direction, streak+1))
+
+    for point in transitions:
+        (py, px, _, _) = point
+        if (py, px) == (prev_y, prev_x):
+            continue
+        if (py, px) not in grid:
+            continue
+
+        cost = cast(int, grid[py, px])
+        yield (cost, point)
+
+def ultra_crucible_neighbours(p):
+    y, x, direction, streak = p
+    dx, dy = direction
+    prev_y, prev_x = y-dy, x-dx
+
+    transitions = []
 
     if p == start:
         transitions.append((1, 0, SOUTH, 1))
@@ -56,59 +77,30 @@ def edges_with_weight(p):
         if (py, px) not in grid:
             continue
 
-        cost = grid[py, px]
+        cost = cast(int, grid[py, px])
         yield (cost, point)
 
+def solve(neighbour_fn):
+    graph = LazyGraph(neighbour_fn)
+    d = graph.dijkstra(start)
+    md = float('inf')
 
-inf = float('inf')
-dist = { start: 0 }
-prev = { }
-pq = [(0, start)]
-history = set()
+    # Technically the "target" is actually many different potential points
+    # one set of x and y, but a wide range of direction and streak values
+    # this we have to find all the "targets" and check which of them is the best
+    for (y, x, _, _), distance in d.distances.items():
+        if (y, x) == target:
+            if distance <= md:
+                md = distance
 
-while pq:
-    _, u = heapq.heappop(pq)
-    if u in history:
-        continue
-    history.add(u)
-    for cost, v in edges_with_weight(u):
-        if v in history:
-            continue
+    return md
 
-        alt = dist[u] + cost
-        if alt < dist.get(v, inf):
-            dist[v] = alt
-            prev[v] = u
-            heapq.heappush(pq, (alt, v))
 
-from functools import cache
+def part_one():
+    return solve(crucible_neighbours)
 
-class DijkstraResult:
-    def __init__(self, start, distances, predecessors):
-        self.start = start
-        self.distances = distances
-        self.predecessors = predecessors
+def part_two():
+    return solve(ultra_crucible_neighbours)
 
-    def distance_to(self, target) -> int:
-        return self.distances[target]
-
-    @cache
-    def path_to(self, target):
-        path = []
-        node = target
-        while node is not self.start:
-            path.append(node)
-            node = self.predecessors[node]
-        path.append(node)
-        path.reverse()
-        return path
-
-d = DijkstraResult(start, dist, prev)
-md = float('inf')
-for (y, x, h, v), distance in dist.items():
-    if (y, x) == target:
-        if distance <= md:
-            md = distance
-            point = (y, x, h, v)
-
-print(md)
+print(part_one())
+print(part_two())
