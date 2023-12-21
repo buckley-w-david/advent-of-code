@@ -1,87 +1,107 @@
-# Grid, Direction
-# Direction.NORTH,SOUTH,EAST,WEST,NE,SE,NW,SW
-# g = Grid([[1, 2, 3], [4, 5, 6], [7, 8, 9]])
-# g.width, g.height, (y, x) in g (coords), g[(y, x)], g[(y, x)] = 5
-# for item in g => iterate over items in row major order
-# g.row_major(_with_index)() => iterate over items in row major order
-# g.column_major(_with_index)() => iterate over items in column major order
-# g.apply(func) => call func with each item
-# g.map(func) => return new Grid with results of func
-# g.ray_from((y, x), direction), yields items from a starting point in a direction
-# g.around(_with_index) => What it sounds like
-
-# Graph
-# g = Graph()
-# g.add_edge(from, to, weight=something)
-# g.dijkstra(start) => Dijkstra (has `distance_to`, and `path_to` methods)
-
-# ShuntingYard
-# Expression parser with configurable precedence for operations so you can throw out (B)EDMAS (no support for brackets)
-
 from aoc_utils import * # type: ignore
 from aocd import get_data
 
-data = get_data(year=2023, day=21, block=True)
-# data = """...........
-# .....###.#.
-# .###.##..#.
-# ..#.#...#..
-# ....#.#....
-# .##..S####.
-# .##..#...#.
-# .......##..
-# .##.#.####.
-# .##..##.##.
-# ..........."""
-grid = Grid([[c for c in line] for line in data.splitlines()])
-graph = Graph()
+def parse_grid(data):
+    return [[c for c in line] for line in data.splitlines()]
 
-stepped = set()
-
-for p, t in grid.row_major_with_index():
-    if t == 'S':
-        stepped.add(p)
-        break
-
-def around(p):
+def around(grid, p):
+    height = width = len(grid)
     y, x = p
     for i in range(-1, 2):
         for j in range(-1, 2):
             if abs(i) == abs(j):
                 continue
             ny, nx = (y + i, x + j)
-            yield (ny, nx), grid[ny % grid.height, nx % grid.width]
+            yield (ny, nx), grid[ny % height][nx % width]
 
-STEPS = grid.width
-for _ in range(STEPS):
-    next_step = set()
-    for point in stepped:
-        for p, t in around(point):
-            if t == '#': continue
-            next_step.add(p)
-    stepped = next_step
+def part_one(data):
+    grid = parse_grid(data)
+    width = height = len(grid)
 
-"""
-26501365 steps means the spread is 26501365 in all 4 cardinal directions
-The direction vertical and horizontal trajectories are clear, so it can spread unimpeded
+    stepped = set()
+    for y in range(height):
+        for x in range(width):
+            p = (y, x)
+            t = grid[y][x]
+            if t == 'S':
+                stepped.add(p)
+                break
 
-The board is 131x131
-26501365 / 131 = 202300.4961832061
-that means we will have covered ~202300 boards of distance
+    for _ in range(64):
+        next_step = set()
+        for point in stepped:
+            for p, t in around(grid, point):
+                if t == '#': continue
+                next_step.add(p)
+        stepped = next_step
 
-It isn't very difficult to work out if most coordinates will be in the visitable set after n steps via simple calculation (alternating even and odd step counts)
-The difficult thing is going to be the edges. They are not perfectly smooth and their exact configuration depends on how far into the tile we are.
-I think I'm going to have to generate all "versions" of a filling tile there are, scan the edge of the pattern, and figure out which version it maps to.
-Then I can do calc(most of the shape) + mapping[edges]
+    return len(stepped)
 
-I think I should be able to generate the versions from a 3x3 set of tiles
-"""
+def part_two(data):
+    grid = parse_grid(data)
+    width = height = len(grid)
+    stepped = set()
 
-for y in range(-grid.height*2, grid.height*2):
-    for x in range(-grid.width*2, grid.width*2):
-        if (y, x) in stepped:
-            print(end='O')
-        else:
-            print(end=grid[(y % grid.height, x % grid.width)])
-    print()
+    for y in range(height):
+        for x in range(width):
+            p = (y, x)
+            t = grid[y][x]
+            if t == 'S':
+                stepped.add(p)
+                break
 
+    # Fill out a 5x5 set of maps
+    for _ in range(2*width + width // 2):
+        next_step = set()
+        for point in stepped:
+            for p, t in around(grid, point):
+                if t == '#': continue
+                next_step.add(p)
+        stepped = next_step
+
+    # This map has all the components of our full one
+    shapes = [
+        ( (0, 1), (-2, -1) ),  # left cone
+        ( (0, 1), (2, 3) ),    # right cone
+        ( (-2, -1), (0, 1) ),  # top cone
+        ( (2, 3), (0, 1) ),    # bottom cone
+
+        ( (-2, -1), (-1, 0) ), # top left corner
+        ( (-2, -1), (1, 2) ),  # top right corner
+        ( (2, 3), (-1, 0) ),   # bottom left corner
+        ( (2, 3), (1, 2) ),    # bottom right corner
+
+        ( (-1, 0), (-1, 0) ),  # top left anti-corner
+        ( (-1, 0), (1, 2) ),   # top right anti-corner
+        ( (1, 2), (-1, 0) ),   # bottom left anti-corner
+        ( (1, 2), (1, 2) ),    # bottom right anti-corner
+
+        ( (0, 1), (0, 1) ),    # type-1 full
+        ( (1, 2), (0, 1) ),    # type-2 full
+    ]
+
+    # The total number of plots will be multiples of the counts of our 5x5 versions
+    counts = [0]*len(shapes)
+    for i, ( (y0, y1), (x0, x1) ) in enumerate(shapes):
+        for y in range(y0*height, y1*height):
+            for x in range(x0*height, x1*height):
+                counts[i] += (y, x) in stepped
+
+    steps = 26501365
+
+    # The number of squares from the middle to the edge
+    length = (steps - width//2) // width
+
+    # cones + length*corner + (length-1)*anti_corner
+    edge_steps = sum(counts[:4]) + sum(n*length for n in counts[4:8]) + sum(n*(length - 1) for n in counts[8:12])
+
+    # The interior maps have two versions depending on parity
+    interior_steps_1 = counts[13] * ( length*(length-1) + length )
+    interior_steps_2 = counts[12] * ( (length-1)*(length-2) + (length-1) )
+
+    return edge_steps + interior_steps_1 + interior_steps_2
+
+data = get_data(year=2023, day=21, block=True)
+
+print(part_one(data))
+print(part_two(data))
