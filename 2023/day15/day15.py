@@ -1,24 +1,56 @@
-# Grid, Direction
-# Direction.NORTH,SOUTH,EAST,WEST,NE,SE,NW,SW
-# g = Grid([[1, 2, 3], [4, 5, 6], [7, 8, 9]])
-# g.width, g.height, (y, x) in g (coords), g[(y, x)], g[(y, x)] = 5
-# for item in g => iterate over items in row major order
-# g.row_major(_with_index)() => iterate over items in row major order
-# g.column_major(_with_index)() => iterate over items in column major order
-# g.apply(func) => call func with each item
-# g.map(func) => return new Grid with results of func
-# g.ray_from((y, x), direction), yields items from a starting point in a direction
-# g.around(_with_index) => What it sounds like
+import re
 
-# Graph
-# g = Graph()
-# g.add_edge(from, to, weight=something)
-# g.dijkstra(start) => Dijkstra (has `distance_to`, and `path_to` methods)
+def hash(s):
+    current = 0
+    for c in s:
+        current += ord(c)
+        current *= 17
+        current %= 256
+    return current
 
-# ShuntingYard
-# Expression parser with configurable precedence for operations so you can throw out (B)EDMAS (no support for brackets)
+def parse_instructions(data):
+    return data.replace("\n", "").split(",")
 
-from aoc_utils import * # type: ignore
-from aocd import get_data
+def part_one(data):
+    instructions = parse_instructions(data)
 
-data = get_data(year=2023, day=15, block=True)
+    s = 0
+    for ins in instructions:
+        s += hash(ins)
+    return s
+
+def part_two(data):
+    boxes = [[] for _ in range(256)]
+    instructions = parse_instructions(data)
+    for ins in instructions:
+        if match := re.match(r"([a-zA-Z]+)(-|=)(\d+)?", ins):
+            ins_label = match.group(1)
+            operation = match.group(2)
+            lense = None
+            if operation == "=":
+                lense = int(match.group(3))
+
+            box = boxes[hash(ins_label)]
+            for i, (label, _) in enumerate(box):
+                if label == ins_label:
+                    if operation == "-":
+                        box.pop(i)
+                    else:
+                        box[i] = (label, lense)
+                    break
+            else: 
+                if operation == "=":
+                    box.append((ins_label, lense))
+
+    power = 0
+    for i, box in enumerate(boxes):
+        for j, (label, lense) in enumerate(box):
+            power += (i+1)*(1+j)*lense
+    return power
+
+
+with open('day15.txt', 'r') as f:
+    data = f.read()
+
+print(part_one(data))
+print(part_two(data))
