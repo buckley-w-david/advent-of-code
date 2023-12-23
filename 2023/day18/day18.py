@@ -1,24 +1,83 @@
-# Grid, Direction
-# Direction.NORTH,SOUTH,EAST,WEST,NE,SE,NW,SW
-# g = Grid([[1, 2, 3], [4, 5, 6], [7, 8, 9]])
-# g.width, g.height, (y, x) in g (coords), g[(y, x)], g[(y, x)] = 5
-# for item in g => iterate over items in row major order
-# g.row_major(_with_index)() => iterate over items in row major order
-# g.column_major(_with_index)() => iterate over items in column major order
-# g.apply(func) => call func with each item
-# g.map(func) => return new Grid with results of func
-# g.ray_from((y, x), direction), yields items from a starting point in a direction
-# g.around(_with_index) => What it sounds like
-
-# Graph
-# g = Graph()
-# g.add_edge(from, to, weight=something)
-# g.dijkstra(start) => Dijkstra (has `distance_to`, and `path_to` methods)
-
-# ShuntingYard
-# Expression parser with configurable precedence for operations so you can throw out (B)EDMAS (no support for brackets)
-
-from aoc_utils import * # type: ignore
+import re
+from aoc_utils import *
 from aocd import get_data
 
+def shoelace(points):
+    t1 = points[-1][0]*points[0][1]
+    t2 = points[-1][1]*points[0][0]
+    for (x1, y1), (x2, y2) in zip(points, points[1:]):
+        t1 += x1*y2
+        t2 += y1*x2
+
+    return abs(t1-t2)/2
+
+RIGHT = (1, 0)
+LEFT = (-1, 0)
+UP = (0, -1)
+DOWN = (0, 1)
+
+direction_map = {
+    "R": RIGHT,
+    "D": DOWN,
+    "L": LEFT,
+    "U": UP,
+
+    "0": RIGHT,
+    "1": DOWN,
+    "2": LEFT,
+    "3": UP,
+}
+
+def parse_plan(data):
+    dig_plan = []
+    for line in data.splitlines():
+        if match := re.match(r"(R|D|L|U) (\d+) \(#(.*)\)", line):
+            d, count, colour = match.groups()
+            direction = direction_map[d]
+
+            dig_plan.append((direction, int(count), colour))
+    return dig_plan
+
+
+def part_one(data):
+    dig_plan = parse_plan(data)
+
+    location = (0, 0)
+    vertices = [location]
+    perimeter = 0
+    for ((dx, dy), length, _) in dig_plan:
+        x, y = location
+        nx, ny = x + dx*length, y + dy*length
+        location = (nx, ny)
+
+        perimeter += abs(nx-x) + abs(ny-y)
+        vertices.append(location)
+
+    area = shoelace(vertices)
+    return perimeter/2 + area + 1
+
+def part_two(data):
+    dig_plan = parse_plan(data)
+
+    location = (0, 0)
+    vertices = [location]
+    perimeter = 0
+    for ((dx, dy), length, colour) in dig_plan:
+        length = int(colour[:5], 16)
+        dx, dy = direction_map[colour[-1]]
+
+        x, y = location
+        nx, ny = x + dx*length, y + dy*length
+        location = (nx, ny)
+
+        perimeter += abs(nx-x) + abs(ny-y)
+        vertices.append(location)
+
+    area = shoelace(vertices)
+    return perimeter/2 + area + 1
+
+
 data = get_data(year=2023, day=18, block=True)
+
+print(part_one(data))
+print(part_two(data))
