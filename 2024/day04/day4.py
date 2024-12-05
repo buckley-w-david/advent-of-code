@@ -12,7 +12,7 @@ def word_search(grid, word):
     ray_length = len(word) - 1
 
     for yx, c in grid.row_major_with_index():
-        for d in Direction:
+        for d in [Direction.EAST, Direction.SE, Direction.SOUTH, Direction.SW]:
             ray = islice(grid.ray_from_with_index(yx, d), ray_length)
             chars = [c]
             pos = [yx]
