@@ -7,17 +7,34 @@ T = TypeVar("T")
 
 class Direction(enum.Enum):
     NORTH = (-1, 0)
-    EAST = (0, 1)
-    SOUTH = (1, 0)
-    WEST = (0, -1)
     NE = (-1, 1)
+    EAST = (0, 1)
     SE = (1, 1)
-    NW = (-1, -1)
+    SOUTH = (1, 0)
     SW = (1, -1)
+    WEST = (0, -1)
+    NW = (-1, -1)
 
     @staticmethod
     def cardinal():
         return [Direction.NORTH, Direction.EAST, Direction.SOUTH, Direction.WEST]
+
+    def reverse(self):
+        if self == Direction.NORTH:
+            return Direction.SOUTH
+        elif self == Direction.SOUTH:
+            return Direction.NORTH
+        elif self == Direction.EAST:
+            return Direction.WEST
+        elif self == Direction.WEST:
+            return Direction.EAST
+        raise
+
+    def rotate(self, handedness: int = 1, cardinal: bool = False):
+        mod = 4 if cardinal else 8
+        directions = Direction.cardinal() if cardinal else list(Direction)
+        index = directions.index(self)
+        return directions[(index + handedness) % mod]
 
 
 class Grid(Generic[T]):
@@ -114,5 +131,5 @@ class Grid(Generic[T]):
                     yield (p, self.arr[y + i][x + j])
 
     def around(self, yx: Tuple[int, int], corners: bool = True) -> Iterator[T]:
-        for ((_, _), elem) in self.around_with_index(yx, corners):
+        for (_, _), elem in self.around_with_index(yx, corners):
             yield elem
