@@ -51,30 +51,23 @@ def part_one(data):
 def part_two(data):
     grid, starting = parse(data)
 
-    visited = simulate(grid, starting)
+    visited = set(p for p, _ in simulate(grid, starting))
 
     assert visited
 
     looped = 0
-    tried = set()
-    for yx, _ in visited:
-        for yx, _ in grid.around_with_index(yx, corners=False):
-            if yx in tried:
-                continue
+    for yx in visited:
+        if grid[yx] != "." or yx == starting:
+            continue
 
-            tried.add(yx)
+        grid[yx] = "#"
 
-            if grid[yx] != "." or yx == starting:
-                continue
+        visited = simulate(grid, starting)
 
-            grid[yx] = "#"
+        grid[yx] = "."
 
-            visited = simulate(grid, starting)
-
-            grid[yx] = "."
-
-            if visited is None:
-                looped += 1
+        if visited is None:
+            looped += 1
 
     return looped
 
