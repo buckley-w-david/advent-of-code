@@ -1,3 +1,4 @@
+from math import log10
 import operator
 
 from aoc_utils import *  # type: ignore
@@ -46,7 +47,7 @@ def part_one(data):
 
 
 def concat(a, b):
-    return int(str(a) + str(b))
+    return a * (10 ** (int(log10(b)) + 1)) + b
 
 
 def part_two(data):
