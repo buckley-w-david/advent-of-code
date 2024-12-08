@@ -17,7 +17,7 @@ def part_one(data):
 
     antinodes = set()
     for _, positions in locations.items():
-        for (ya, xa), (yb, xb) in combinations(sorted(positions), 2):
+        for (ya, xa), (yb, xb) in combinations(positions, 2):
             dy = yb - ya
             dx = xb - xa
 
@@ -42,7 +42,7 @@ def part_two(data):
 
     antinodes = set()
     for _, positions in locations.items():
-        for (ya, xa), (yb, xb) in combinations(sorted(positions), 2):
+        for (ya, xa), (yb, xb) in combinations(positions, 2):
             antinodes.add((ya, xa))
             antinodes.add((yb, xb))
             dy = yb - ya
