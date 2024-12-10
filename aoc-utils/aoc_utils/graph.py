@@ -1,14 +1,27 @@
 import abc
 from collections import defaultdict, deque
+
 try:
     from functools import cache
 except ImportError:
     from functools import lru_cache
+
     cache = lru_cache(None)
 import heapq
-from typing import Any, TypeVar, Generic, Iterable, Callable, Tuple, Set, Iterator
+from typing import (
+    Any,
+    Optional,
+    TypeVar,
+    Generic,
+    Iterable,
+    Callable,
+    Tuple,
+    Set,
+    Iterator,
+)
 
 T = TypeVar("T")
+
 
 class Dijkstra(Generic[T]):
     def __init__(self, start: T, distances: dict[T, int], predecessors: dict[T, T]):
@@ -20,20 +33,25 @@ class Dijkstra(Generic[T]):
         return self.distances[target]
 
     @cache
-    def path_to(self, target: T) -> list[T]:
+    def path_to(self, target: T) -> Optional[list[T]]:
         path = []
         node = target
+
         while node is not self.start:
             path.append(node)
+            if node not in self.predecessors:
+                return None
+
             node = self.predecessors[node]
+
         path.append(node)
         path.reverse()
         return path
 
+
 class NodeGraph(Generic[T], abc.ABC):
     @abc.abstractmethod
-    def edges(self, node: T) -> Iterable[T]:
-        ...
+    def edges(self, node: T) -> Iterable[T]: ...
 
     def bfs(self, start: T, visit: Callable[[T], Any]):
         history = set([start])
@@ -53,13 +71,12 @@ class WeightedGraph(Generic[T], NodeGraph[T], abc.ABC):
         yield from (node for _, node in self.edges_with_weight(node))
 
     @abc.abstractmethod
-    def edges_with_weight(self, node: T) -> Iterable[Tuple[int, T]]:
-        ...
+    def edges_with_weight(self, node: T) -> Iterable[Tuple[int, T]]: ...
 
     def dijkstra(self, start: T) -> Dijkstra:
-        inf = float('inf')
-        dist = { start: 0 }
-        prev = { }
+        inf = float("inf")
+        dist = {start: 0}
+        prev = {}
         pq = [(0, start)]
         history = set()
 
@@ -77,6 +94,7 @@ class WeightedGraph(Generic[T], NodeGraph[T], abc.ABC):
                     dist[v] = alt
                     prev[v] = u
                     heapq.heappush(pq, (alt, v))
+
         return Dijkstra(start, dist, prev)
 
 
