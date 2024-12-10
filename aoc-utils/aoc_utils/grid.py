@@ -41,6 +41,10 @@ class Grid(Generic[T]):
     def __init__(self, arr: List[List[T]]) -> None:
         self.arr = arr
 
+    @staticmethod
+    def parse(grid: str, cast: Callable[[str], T] = str) -> "Grid[T]":
+        return Grid([[cast(c) for c in line] for line in grid.splitlines()])
+
     @property
     def height(self) -> int:
         return len(self.arr)
@@ -48,6 +52,24 @@ class Grid(Generic[T]):
     @property
     def width(self) -> int:
         return len(self.arr[0])
+
+    def __str__(self):
+        lines = []
+        for y in range(self.height):
+            line = []
+            for x in range(self.width):
+                line.append(self.arr[y][x])
+            lines.append("".join(line))
+        return "\n".join(lines)
+
+    def print(self, highlight=[], colour=31):
+        for y in range(self.height):
+            for x in range(self.width):
+                if (y, x) in highlight:
+                    print(f"\033[{colour};1;4m{self.arr[y][x]}\033[0m", end="")
+                else:
+                    print(self.arr[y][x], end="")
+            print()
 
     def __contains__(self, yx: Tuple[int, int]) -> bool:
         y, x = yx
