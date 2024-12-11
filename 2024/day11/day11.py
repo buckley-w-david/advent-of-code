@@ -21,7 +21,7 @@ def count_rocks(rocks, iterations):
                 nr[left] += n
                 nr[right] += n
             else:
-                nr[rock * 2024] += rocks[rock]
+                nr[rock * 2024] += n
         rocks = nr
 
     return sum(rocks.values())
