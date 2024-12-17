@@ -24,11 +24,6 @@ def parse(data):
     grid[start] = "."
     grid[target] = "."
 
-    def move(yx, d):
-        y, x = yx
-        dy, dx = d.value
-        return (y + dy, x + dx)
-
     queue = deque([(start, Direction.EAST)])
     history = set()
 
@@ -42,15 +37,15 @@ def parse(data):
         rt = d.rotate(handedness=+1, cardinal=True)
         lt = d.rotate(handedness=-1, cardinal=True)
 
-        if grid[move(yx, rt)] == ".":
+        if grid[yx + rt] == ".":
             graph.add_edge((yx, d.value), (yx, rt.value), weight=1000)
             queue.append((yx, rt))
 
-        if grid[move(yx, lt)] == ".":
+        if grid[yx + lt] == ".":
             graph.add_edge((yx, d.value), (yx, lt.value), weight=1000)
             queue.append((yx, lt))
 
-        if grid[yxr := move(yx, d)] == ".":
+        if grid[yxr := yx + d] == ".":
             graph.add_edge((yx, d.value), (yxr, d.value), weight=1)
             queue.append((yxr, d))
 

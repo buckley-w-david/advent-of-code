@@ -19,6 +19,22 @@ class Direction(enum.Enum):
     def cardinal():
         return [Direction.NORTH, Direction.EAST, Direction.SOUTH, Direction.WEST]
 
+    def __add__(self, coordinates: Tuple[int, int]) -> Tuple[int, int]:
+        y, x = coordinates
+        dy, dx = self.value
+        return (y + dy, x + dx)
+
+    def __radd__(self, coordinates: Tuple[int, int]) -> Tuple[int, int]:
+        return self.__add__(coordinates)
+
+    def __sub__(self, coordinates: Tuple[int, int]) -> Tuple[int, int]:
+        y, x = coordinates
+        dy, dx = self.value
+        return (y - dy, x - dx)
+
+    def __rsub__(self, coordinates: Tuple[int, int]) -> Tuple[int, int]:
+        return self.__sub__(coordinates)
+
     def reverse(self):
         if self == Direction.NORTH:
             return Direction.SOUTH
