@@ -65,10 +65,11 @@ def part_one(data):
     return t
 
 
-def cheat_distance(p1, p2):
-    y1, x1 = p1
-    y2, x2 = p2
-    return abs(x2 - x1) + abs(y2 - y1)
+def cheat_destinations(yx, stride=20):
+    sy, sx = yx
+    for y in range(-stride - 1, stride + 1):
+        for x in range(-stride + abs(y), stride - abs(y) + 1):
+            yield (sy + y, sx + x), abs(x) + abs(y)
 
 
 def part_two(data):
@@ -81,14 +82,17 @@ def part_two(data):
 
     distances = {yx: i for i, yx in enumerate(path)}
     t = 0
-    for cheat_start, cheat_end in combinations(path, 2):
-        d = cheat_distance(cheat_start, cheat_end)
-        if d > 20:
-            continue
-        total = distances[cheat_start] + d + (distances[end] - distances[cheat_end])
-        diff = cheatless_distance - total
-        if diff >= 100:
-            t += 1
+    for cheat_start in path:
+        for cheat_end, d in cheat_destinations(cheat_start):
+            if (
+                cheat_end not in distances
+                or distances[cheat_start] > distances[cheat_end]
+            ):
+                continue
+            total = distances[cheat_start] + d + (distances[end] - distances[cheat_end])
+            diff = cheatless_distance - total
+            if diff >= 100:
+                t += 1
     return t
 
 
