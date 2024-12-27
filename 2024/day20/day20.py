@@ -53,14 +53,12 @@ def part_one(data):
     cheatless = d1.distance_to((end, 2))
     d2 = graph.dijkstra((end, 2))
 
-    candidates = set()
     t = 0
     for (yx, c), d in d2.distances.items():
         if c == 1:
             d_start = d1.distance_to((yx, 1))
             if cheatless - (d_start + d) >= 100:
                 t += 1
-                candidates.add((yx, d))
 
     return t
 
