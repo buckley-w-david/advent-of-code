@@ -20,6 +20,14 @@ class Range:
     def __lt__(self, other):
         return self.left < other.left
 
+    def covers(self, other: "Range") -> bool:
+        assert self.left <= other.left
+        return self.left <= other.left and self.right >= other.right
+
+    def intersects(self, other: "Range") -> bool:
+        assert self.left <= other.left
+        return self.left <= other.left and self.right >= other.left
+
 
 def parse(data):
     range_lines, id_lines = data.split("\n\n")
@@ -53,9 +61,9 @@ def part_two(data):
     merged = [ranges[0]]
     for next_range in ranges[1:]:
         current_range = merged[-1]
-        if current_range.right >= next_range.right:
-            merged[-1] = Range(left=current_range.left, right=current_range.right)
-        elif current_range.right >= next_range.left:
+        if current_range.covers(next_range):
+            continue
+        elif current_range.intersects(next_range):
             merged[-1] = Range(left=current_range.left, right=next_range.right)
         else:
             merged.append(next_range)
