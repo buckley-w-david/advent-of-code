@@ -1,18 +1,18 @@
-[tool.poetry]
+[project]
 name = "aoc-utils"
-version = "0.8.6"
+version = "0.8.9"
 description = ""
-authors = ["David Buckley <david@davidbuckley.ca>"]
+authors = [{ name = "David Buckley", email = "david@davidbuckley.ca" }]
+requires-python = ">=3.9,<4.0"
 readme = "README.md"
 
-[tool.poetry.dependencies]
-python = ">=3.9,<4.0"
-
-[tool.poetry.dev-dependencies]
-pytest = "^5.2"
-black = "^21.12b0"
-mypy = "^0.910"
+[dependency-groups]
+dev = [
+    "pytest>=5.2,<6",
+    "black>=21.12b0,<22",
+    "mypy>=0.910,<0.911",
+]
 
 [build-system]
-requires = ["poetry-core>=1.0.0"]
-build-backend = "poetry.core.masonry.api"
+requires = ["hatchling"]
+build-backend = "hatchling.build"
