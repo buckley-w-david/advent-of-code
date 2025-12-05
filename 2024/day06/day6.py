@@ -14,6 +14,9 @@ def parse(data):
         if c == "^":
             guard = yx
             break
+
+    assert guard
+
     grid[guard] = "."
     return grid, guard
 

@@ -1,6 +1,3 @@
-import re
-from collections import Counter
-
 from aoc_utils import *  # type: ignore
 from aocd import get_data
 
@@ -65,7 +62,7 @@ def part_two(data):
 
     grid, instructions, robot = parse(d)
 
-    for i, direction in enumerate(instructions):
+    for direction in instructions:
         dy, dx = direction.value
         ry, rx = robot
         next_position = (ry + dy, rx + dx)

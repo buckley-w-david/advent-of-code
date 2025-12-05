@@ -9,7 +9,7 @@ data = get_data(year=2024, day=8, block=True)
 
 def part_one(data):
     locations = defaultdict(set)
-    grid = Grid([[c for c in line] for line in data.splitlines()])
+    grid = Grid.parse(data)
 
     for yx, c in grid.row_major_with_index():
         if c != ".":
@@ -34,7 +34,7 @@ def part_one(data):
 
 def part_two(data):
     locations = defaultdict(set)
-    grid = Grid([[c for c in line] for line in data.splitlines()])
+    grid = Grid.parse(data)
 
     for yx, c in grid.row_major_with_index():
         if c != ".":

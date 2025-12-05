@@ -1,4 +1,4 @@
-from collections import defaultdict, deque
+from collections import deque
 
 from aoc_utils import *  # type: ignore
 from aocd import get_data
@@ -37,7 +37,7 @@ def part_two(data):
     grid = Grid.parse(data, cast=int)
     graph = Graph()
     head_candidates = set()
-    tail_ratings = defaultdict(int)
+    tail_ratings = 0
 
     for yx, h1 in grid.row_major_with_index():
         if h1 == 0:
@@ -52,12 +52,12 @@ def part_two(data):
         while queue:
             node = queue.pop()
             if grid[node] == 9:
-                tail_ratings[node] += 1
+                tail_ratings += 1
 
             for other_node in graph.edges(node):
                 queue.appendleft(other_node)
 
-    return sum(tail_ratings.values())
+    return tail_ratings
 
 
 print(part_one(data))
