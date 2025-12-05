@@ -45,8 +45,8 @@ def parse_graph(data, undirected=False):
 
         if node == end:
             graph[segment_start].add((node, segment_length))
-            if undirected:
-                graph[node].add((segment_start, segment_length))
+            # if undirected:
+            #     graph[node].add((segment_start, segment_length))
         elif grid[node] != '.' and segment_start != node:
             # Branching points in the maze are marked by v and >
             # We use these points as endpoints in a graph
