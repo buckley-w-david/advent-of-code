@@ -60,6 +60,15 @@ name = "aoc-utils"
 version = "0.8.9"
 source = { directory = "aoc-utils" }
 
+[package.metadata]
+
+[package.metadata.requires-dev]
+dev = [
+    { name = "black", specifier = ">=21.12b0,<22" },
+    { name = "mypy", specifier = ">=0.910,<0.911" },
+    { name = "pytest", specifier = ">=5.2,<6" },
+]
+
 [[package]]
 name = "aocd-example-parser"
 version = "2025.12.4"
