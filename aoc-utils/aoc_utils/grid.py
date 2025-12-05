@@ -1,5 +1,5 @@
 import enum
-from typing import List, TypeVar, Tuple, Union, Generic, Iterator, Callable
+from typing import List, TypeVar, Tuple, Union, Generic, Iterator, Callable, cast
 
 S = TypeVar("S")
 T = TypeVar("T")
@@ -107,6 +107,11 @@ class Grid(Generic[T]):
 
     def __iter__(self) -> Iterator[T]:
         return self.row_major()
+
+    def get(self, yx: Tuple[int, int], default: T | None = None) -> T | None:
+        if yx in self:
+            return cast(T, self[yx])
+        return default
 
     def insert_row(self, y: int, row: List[T]):
         self.arr.insert(y, row)
