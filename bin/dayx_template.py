@@ -1,24 +1,18 @@
-# Grid, Direction
-# Direction.NORTH,SOUTH,EAST,WEST,NE,SE,NW,SW
-# g = Grid([[1, 2, 3], [4, 5, 6], [7, 8, 9]])
-# g.width, g.height, (y, x) in g (coords), g[(y, x)], g[(y, x)] = 5
-# for item in g => iterate over items in row major order
-# g.row_major(_with_index)() => iterate over items in row major order
-# g.column_major(_with_index)() => iterate over items in column major order
-# g.apply(func) => call func with each item
-# g.map(func) => return new Grid with results of func
-# g.ray_from((y, x), direction), yields items from a starting point in a direction
-# g.around(_with_index) => What it sounds like
+with open("input.txt", "r") as f:
+    data = f.read()
 
-# Graph
-# g = Graph()
-# g.add_edge(from, to, weight=something)
-# g.dijkstra(start) => Dijkstra (has `distance_to`, and `path_to` methods)
 
-# ShuntingYard
-# Expression parser with configurable precedence for operations so you can throw out (B)EDMAS (no support for brackets)
+def parse(data):
+    return data
 
-from aoc_utils import *
-from aocd import get_data
 
-data = get_data(year=REPLACE_YEAR, day=REPLACE_DAY, block=True)
+def part_one(data):
+    data = parse(data)
+
+
+def part_two(data):
+    data = parse(data)
+
+
+print(part_one(data))
+print(part_two(data))
