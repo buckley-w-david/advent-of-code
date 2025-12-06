@@ -21,7 +21,7 @@ package = false
 
 [tool.uv.sources]
 polyglot = { git = "https://github.com/buckley-w-david/polyglot.git" }
-aoc-utils = { path = "aoc-utils" }
+aoc-utils = { path = "aoc-utils", editable = true }
 
 [build-system]
 requires = ["hatchling"]
