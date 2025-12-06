@@ -1,7 +1,7 @@
 import itertools
+from aocd import get_data
 
-with open("input.txt", "r") as f:
-    data = f.read()
+data = get_data(year=2025, day=2, block=True)
 
 
 def parse(data):

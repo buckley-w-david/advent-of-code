@@ -2,10 +2,12 @@ from functools import reduce
 from operator import mul, add
 from collections import defaultdict
 
+from aocd import get_data
+
 from aoc_utils.collections import transpose
 
-with open("input.txt", "r") as f:
-    data = f.read()
+
+data = get_data(year=2025, day=6, block=True)
 
 
 def parse_one(data):

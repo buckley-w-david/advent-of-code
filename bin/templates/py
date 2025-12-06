@@ -1,5 +1,6 @@
-with open("input.txt", "r") as f:
-    data = f.read()
+from aocd import get_data
+
+data = get_data(year=REPLACE_YEAR, day=REPLACE_DAY, block=True)
 
 
 def parse(data):

@@ -1,8 +1,9 @@
 from functools import total_ordering
 from dataclasses import dataclass
 
-with open("input.txt", "r") as f:
-    data = f.read()
+from aocd import get_data
+
+data = get_data(year=2025, day=5, block=True)
 
 
 @dataclass
