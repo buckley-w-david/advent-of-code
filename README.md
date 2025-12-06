@@ -6,7 +6,6 @@ Most of the solutions here are pretty terrible and optimized getting to a workin
 
 ## Dependencies
 
- - [poetry](https://python-poetry.org/)
- - [polyglot](https://github.com/buckley-w-david/polyglot) (Optional)
- - [direnv](https://direnv.net/) (Optional)
-   - [layout_poetry](https://github.com/buckley-w-david/dotfiles/blob/c7ea6890ab495d0126448caf0e6bcfda50596b13/direnvrc#L11-L25)
+- [uv](https://github.com/astral-sh/uv)
+- [polyglot](https://github.com/buckley-w-david/polyglot) (Optional)
+- [direnv](https://direnv.net/) (Optional)
