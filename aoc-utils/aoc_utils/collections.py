@@ -1,13 +1,17 @@
 import itertools
 
+
 def maxn(l, n):
     return sorted(l)[-n:]
+
 
 def minn(l, n):
     return sorted(l)[:n]
 
+
 def take(l, n):
     return list(itertools.islice(iter(l), 0, n))
+
 
 def chunk(l, n):
     li = iter(l)
@@ -18,10 +22,16 @@ def chunk(l, n):
         else:
             break
 
+
 def groups(l, n):
-    return chunk(l, len(l)//n)
+    return chunk(l, len(l) // n)
+
 
 def alternating(*iterables):
     for values in zip(*iterables):
         for value in values:
             yield value
+
+
+def transpose(l):
+    return list(zip(*l))
