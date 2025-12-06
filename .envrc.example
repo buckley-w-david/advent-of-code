@@ -1,3 +1,4 @@
-layout_poetry
 export AOC_SESSION="REPLACE ME"
+export VIRTUAL_ENV=.venv
+layout python
 PATH_add bin
