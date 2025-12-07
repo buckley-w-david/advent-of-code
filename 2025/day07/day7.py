@@ -66,5 +66,21 @@ def part_two(data):
     return sum(counts.values())
 
 
+def part_two_smart(data):
+    grid, (y, x) = parse(data)
+    row = [0 for _ in range(grid.width)]
+    row[x] = 1
+
+    for y in range(y, grid.height - 1):
+        for x in range(grid.width):
+            if grid[y, x] == "^":
+                row[x - 1] += row[x]
+                row[x + 1] += row[x]
+                row[x] = 0
+
+    return sum(row)
+
+
 print(part_one(data))
 print(part_two(data))
+print(part_two_smart(data))
