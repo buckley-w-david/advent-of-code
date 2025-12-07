@@ -59,21 +59,21 @@ def part_one(data):
 
 def part_two(data):
     grid, start = parse(data)
-
-    dependencies = defaultdict(set)
-    exits = set()
     front = {(start, start)}
+    counts = defaultdict(int)
+    counts[start] = 1
+
     while front:
         nf = set()
         for start, position in front:
             next_position = position + Direction.SOUTH
             if next_position not in grid:
-                exits.add((position, start))
                 continue
             elif grid[next_position] is Cell.SPLITTER:
-                dependencies[next_position].add(start)
+                counts[next_position] += counts[start]
                 left = next_position + Direction.EAST
                 right = next_position + Direction.WEST
+
                 if left in grid:
                     nf.add((next_position, left))
                 if right in grid:
@@ -82,14 +82,7 @@ def part_two(data):
                 nf.add((start, next_position))
         front = nf
 
-    @cache
-    def quantum_count(splitter):
-        if not dependencies[splitter]:
-            return 1
-
-        return sum(quantum_count(s) for s in dependencies[splitter])
-
-    return sum(quantum_count(splitter) for _, splitter in exits)
+    return sum(counts.values())
 
 
 print(part_one(data))
