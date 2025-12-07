@@ -1,7 +1,5 @@
 from collections import defaultdict
-import enum
-from functools import cache, reduce
-from operator import mul
+
 from aocd import get_data
 
 from aoc_utils import Grid, Direction
@@ -9,24 +7,10 @@ from aoc_utils import Grid, Direction
 data = get_data(year=2025, day=7, block=True)
 
 
-class Cell(enum.Enum):
-    EMPTY = enum.auto()
-    SPLITTER = enum.auto()
-    START = enum.auto()
-
-
-def parse(data: str) -> tuple[Grid[Cell], tuple[int, int]]:
-    def cast(c: str) -> Cell:
-        if c == ".":
-            return Cell.EMPTY
-        elif c == "^":
-            return Cell.SPLITTER
-        else:
-            return Cell.START
-
-    grid: Grid[Cell] = Grid.parse(data, cast)
+def parse(data: str) -> tuple[Grid[str], tuple[int, int]]:
+    grid = Grid.parse(data)
     for position, c in grid.row_major_with_index():
-        if c is Cell.START:
+        if c == "S":
             return grid, position
     assert False
 
@@ -36,22 +20,22 @@ def part_one(data):
 
     splitters = 0
     front = {start}
-    while front:
+
+    # Each step moves us down one row
+    # As such, we only have to advance down to the last row (which has no splitters)
+    for _ in range(grid.height - 1):
         nf = set()
+
         for position in front:
             next_position = position + Direction.SOUTH
-            if next_position not in grid:
-                continue
-            elif grid[next_position] is Cell.SPLITTER:
+            if grid[next_position] == "^":
                 splitters += 1
-                left = next_position + Direction.EAST
-                right = next_position + Direction.WEST
-                if left in grid:
-                    nf.add(left)
-                if right in grid:
-                    nf.add(right)
+
+                nf.add(next_position + Direction.EAST)
+                nf.add(next_position + Direction.WEST)
             else:
                 nf.add(next_position)
+
         front = nf
 
     return splitters
@@ -59,27 +43,24 @@ def part_one(data):
 
 def part_two(data):
     grid, start = parse(data)
+
     front = {(start, start)}
     counts = defaultdict(int)
     counts[start] = 1
 
-    while front:
+    for _ in range(grid.height - 1):
         nf = set()
-        for start, position in front:
-            next_position = position + Direction.SOUTH
-            if next_position not in grid:
-                continue
-            elif grid[next_position] is Cell.SPLITTER:
-                counts[next_position] += counts[start]
-                left = next_position + Direction.EAST
-                right = next_position + Direction.WEST
 
-                if left in grid:
-                    nf.add((next_position, left))
-                if right in grid:
-                    nf.add((next_position, right))
+        for source, position in front:
+            next_position = position + Direction.SOUTH
+            if grid[next_position] == "^":
+                counts[next_position] += counts[source]
+
+                nf.add((next_position, next_position + Direction.EAST))
+                nf.add((next_position, next_position + Direction.WEST))
             else:
-                nf.add((start, next_position))
+                nf.add((source, next_position))
+
         front = nf
 
     return sum(counts.values())
