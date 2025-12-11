@@ -1,14 +1,17 @@
-from collections import deque
+import functools
+import operator
 import re
 import string
 
 from aocd import get_data
 import z3
 
+from aoc_utils import powerset
+
 data = get_data(year=2025, day=10, block=True)
 
 
-def parse(data):
+def parse_one(data):
     pattern = re.compile(r"\[([.#]+)] ((?:\([\d,]+\) )+){([\d,]+)}")
     r = []
     for line in data.splitlines():
@@ -17,7 +20,6 @@ def parse(data):
 
         diagram = m.group(1).strip()
         button_groups = m.group(2).strip()
-        joltage_group = m.group(3).strip()
 
         size = len(diagram)
         dn = 0
@@ -32,30 +34,21 @@ def parse(data):
                 bn |= 2 ** (size - int(c) - 1)
             buttons.append(bn)
 
-        joltage = tuple(int(n) for n in joltage_group.split(","))
-
-        r.append((dn, buttons, joltage))
+        r.append((dn, buttons))
 
     return r
 
 
 def min_sequence_length(target, buttons):
-    seen = {0}
-    lights = deque([(0, 0)])
-    while True:
-        current, depth = lights.popleft()
-        for button in buttons:
-            v = current ^ button
-            if v == target:
-                return depth + 1
-            elif v not in seen:
-                seen.add(v)
-                lights.append((v, depth + 1))
+    for s in powerset(buttons):
+        if functools.reduce(operator.xor, s, 0) == target:
+            return len(s)
+    assert False
 
 
 def part_one(data):
     return sum(
-        min_sequence_length(target, buttons) for target, buttons, _ in parse(data)
+        min_sequence_length(target, buttons) for target, buttons in parse_one(data)
     )
 
 
