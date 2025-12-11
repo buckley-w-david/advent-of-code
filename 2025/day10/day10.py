@@ -1,6 +1,9 @@
 from collections import deque
 import re
+import string
+
 from aocd import get_data
+import z3
 
 data = get_data(year=2025, day=10, block=True)
 
@@ -56,8 +59,58 @@ def part_one(data):
     )
 
 
+def parse_two(data):
+    pattern = re.compile(r"\[([.#]+)] ((?:\([\d,]+\) )+){([\d,]+)}")
+    r = []
+    for line in data.splitlines():
+        m = pattern.match(line)
+        assert m
+
+        button_groups = m.group(2).strip()
+        joltage_group = m.group(3).strip()
+
+        joltage = tuple(int(n) for n in joltage_group.split(","))
+
+        buttons = []
+        for m in re.findall(r"\(([\d,]+)\)", button_groups):
+            l = [0 for _ in range(len(joltage))]
+            for c in m.split(","):
+                l[int(c)] = 1
+            buttons.append(tuple(l))
+
+        r.append((buttons, joltage))
+
+    return r
+
+
+def min_joltage_length(joltage, buttons):
+    # Coefficients for each of the buttons
+    coefficients = [z3.Int(string.ascii_lowercase[i]) for i in range(len(buttons))]
+    solver = z3.Optimize()
+    # You can't press a button a negative number of times
+    for c in coefficients:
+        solver.add(c >= 0)
+
+    for counter in range(len(joltage)):
+        solver.add(
+            # The sum of all button values multiplied by their coefficient in each dimension of the answer
+            # must equal the final joltage number in that dimension
+            z3.Sum(coefficients[i] * buttons[i][counter] for i in range(len(buttons)))
+            == joltage[counter]
+        )
+
+    _obj = solver.minimize(z3.Sum(coefficients))
+    if solver.check() == z3.sat:
+        model = solver.model()
+        return sum(model[c].as_long() for c in coefficients)
+    else:
+        assert False
+
+
 def part_two(data):
-    return parse(data)
+    return sum(
+        min_joltage_length(joltage, buttons) for buttons, joltage in parse_two(data)
+    )
 
 
 print(part_one(data))
